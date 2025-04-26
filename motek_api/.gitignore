@@ -1,0 +1,38 @@
+# Rust build
+/target/
+**/*.rs.bk
+
+# IDE/editor
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Binaries
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Logs
+*.log
+
+# Environment variables
+.env
+.env.*
+
+# SQLx offline data
+sqlx-data.json
+
+# Config files
+config.*.toml
+
+# Misc
+.DS_Store
+Thumbs.db
+
+# Cargo package
+/Cargo.lock
+
+# Node (jeśli masz front-end w projekcie)
+node_modules/

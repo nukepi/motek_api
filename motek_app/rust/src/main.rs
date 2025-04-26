@@ -1,7 +1,9 @@
+//main.rs
+
 mod database;
 mod model;
 mod config;
-mod utils; // <-- dodaj to!
+mod utils;
 
 use dotenv::dotenv;
 use crate::config::config_loader;

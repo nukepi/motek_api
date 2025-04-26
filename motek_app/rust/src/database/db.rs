@@ -1,3 +1,5 @@
+//database/db.rs
+
 use sqlx::{PgPool, postgres::PgPoolOptions};
 use crate::model::user::User;
 
