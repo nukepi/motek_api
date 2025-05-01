@@ -1,12 +1,13 @@
 use axum::{
+    Router,
     extract::{State, Json},
-    response::IntoResponse,
     http::StatusCode,
+    routing::post,
 };
 use serde::{Deserialize, Serialize};
 use bcrypt::{hash, verify};
 use sqlx::PgPool;
-
+use uuid::Uuid;
 use crate::models::user::User;
 use crate::state::AppState;
 use crate::database::token::create_jwt;
@@ -28,70 +29,74 @@ pub struct AuthResponse {
     pub token: String,
 }
 
-// Funkcja pomocnicza do pobierania użytkownika po emailu
-async fn get_user_by_email(pool: &PgPool, email: &str) -> Option<User> {
+pub fn router() -> Router<AppState> {
+    Router::new()
+        .route("/register", post(register))
+        .route("/login",    post(login))
+}
+
+// pomocniczo
+async fn get_user_by_email(pool: &PgPool, email: &str) -> Result<User, sqlx::Error> {
     sqlx::query_as::<_, User>("SELECT * FROM users WHERE email = $1")
         .bind(email)
         .fetch_optional(pool)
-        .await
-        .ok()
-        .flatten()
+        .await?
+        .ok_or_else(|| sqlx::Error::RowNotFound)
 }
 
 pub async fn register(
     State(state): State<AppState>,
     Json(payload): Json<RegisterPayload>,
-) -> impl IntoResponse {
-    // Sprawdź czy użytkownik już istnieje
-    if get_user_by_email(&state.pool, &payload.email).await.is_some() {
-        eprintln!("[register] Email already exists: {}", &payload.email);
-        return (StatusCode::CONFLICT, Json("Email already exists")).into_response();
+) -> Result<(StatusCode, Json<String>), (StatusCode, String)> {
+    // 1) duplikat?
+    if sqlx::query_scalar::<_, Uuid>(
+            "SELECT id FROM users WHERE email = $1 LIMIT 1"
+        )
+        .bind(&payload.email)
+        .fetch_optional(&state.pool)
+        .await
+        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?
+        .is_some()
+    {
+        return Err((StatusCode::CONFLICT, "Email already exists".to_string()));
     }
 
-    // Hashowanie hasła
-    let password_hash = match hash(&payload.password, 4) {
-        Ok(h) => h,
-        Err(e) => {
-            eprintln!("[register] Hash error for email {}: {:?}", &payload.email, e);
-            return (StatusCode::INTERNAL_SERVER_ERROR, Json("Hash error")).into_response();
-        }
-    };
+    // 2) hash hasła
+    let password_hash = hash(&payload.password, 4)
+        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
 
-    // Dodaj użytkownika do bazy (id generuje się automatycznie!)
-    let result = sqlx::query_as::<_, User>(
+    // 3) insert
+    sqlx::query_as::<_, User>(
         "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *"
     )
     .bind(&payload.email)
     .bind(&password_hash)
     .fetch_one(&state.pool)
-    .await;
+    .await
+    .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
 
-    match result {
-        Ok(_user) => {
-            println!("[register] User registered: {}", &payload.email);
-            (StatusCode::CREATED, Json("User registered")).into_response()
-        },
-        Err(e) => {
-            eprintln!("[register] DB error for email {}: {:?}", &payload.email, e);
-            (StatusCode::INTERNAL_SERVER_ERROR, Json("Database error")).into_response()
-        }
-    }
+    Ok((StatusCode::CREATED, Json("User registered".to_string())))
 }
 
 pub async fn login(
     State(state): State<AppState>,
     Json(payload): Json<LoginPayload>,
-) -> impl IntoResponse {
-    let user = match get_user_by_email(&state.pool, &payload.email).await {
-        Some(u) => u,
-        None => return (StatusCode::UNAUTHORIZED, Json("Invalid credentials")).into_response(),
-    };
+) -> Result<(StatusCode, Json<AuthResponse>), (StatusCode, String)> {
+    let user = get_user_by_email(&state.pool, &payload.email)
+        .await
+        .map_err(|_| (StatusCode::UNAUTHORIZED, "Invalid credentials".to_string()))?;
 
-    match verify(&payload.password, &user.password) {
-        Ok(true) => {
-            let token = create_jwt(&user.email, &state.jwt_secret);
-            (StatusCode::OK, Json(AuthResponse { token })).into_response()
-        }
-        _ => (StatusCode::UNAUTHORIZED, Json("Invalid credentials")).into_response(),
+    if verify(&payload.password, &user.password)
+        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?
+    {
+        let secret = state
+            .config
+            .jwt_secret
+            .as_deref()
+            .expect("Missing JWT secret");
+        let token = create_jwt(&user.email, secret);
+        Ok((StatusCode::OK, Json(AuthResponse { token })))
+    } else {
+        Err((StatusCode::UNAUTHORIZED, "Invalid credentials".to_string()))
     }
 }

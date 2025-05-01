@@ -1,1 +1,9 @@
+pub mod api;
 pub mod auth;
+pub mod notes;
+pub mod notebooks;
+pub mod attachments;
+pub mod reminders;
+pub mod shared_notes;
+pub mod note_settings;
+pub mod user_settings;

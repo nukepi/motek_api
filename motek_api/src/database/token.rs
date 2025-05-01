@@ -1,3 +1,5 @@
+//database.token.rs
+
 use jsonwebtoken::{encode, decode, Header, EncodingKey, DecodingKey, Validation, Algorithm, TokenData};
 use serde::{Serialize, Deserialize};
 use chrono::{Utc, Duration};
@@ -18,6 +20,7 @@ pub fn create_jwt(username: &str, secret: &str) -> String {
     encode(&Header::default(), &claims, &EncodingKey::from_secret(secret.as_bytes())).unwrap()
 }
 
+#[allow(dead_code)]
 pub fn verify_jwt(token: &str, secret: &str) -> Option<TokenData<Claims>> {
     decode::<Claims>(
         token,

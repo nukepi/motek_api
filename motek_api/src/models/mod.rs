@@ -1,1 +1,9 @@
 pub mod user;
+pub mod user_settings;
+pub mod notebook;
+pub mod note;
+pub mod note_settings;
+pub mod note_version;
+pub mod shared_note;
+pub mod attachment;
+pub mod reminder;
