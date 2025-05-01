@@ -11,23 +11,23 @@ use uuid::Uuid;
 #[derive(Debug, FromRow, Serialize, Deserialize)]
 pub struct Note {
     /// UUID of the note
-    pub id:           Uuid,
+    pub id: Uuid,
     /// UUID of the owner (users.id)
-    pub user_id:      Uuid,
+    pub user_id: Uuid,
     /// UUID of the folder (notebooks.id), if assigned
-    pub notebook_id:  Option<Uuid>,
+    pub notebook_id: Option<Uuid>,
     /// Title of the note
-    pub title:        String,
+    pub title: String,
     /// Content in JSON (block editor / markdown, etc.)
-    pub content:      Value,
+    pub content: Value,
     /// Archive flag
-    pub is_archived:  bool,
+    pub is_archived: bool,
     /// Pin flag
-    pub is_pinned:    bool,
+    pub is_pinned: bool,
     /// Array of tags in JSONB
-    pub tags:         Value,
+    pub tags: Value,
     /// Creation timestamp
-    pub created_at:   DateTime<Utc>,
+    pub created_at: DateTime<Utc>,
     /// Last modification timestamp (triggered)
-    pub updated_at:   DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
 }

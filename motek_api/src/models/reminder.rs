@@ -8,13 +8,13 @@ use uuid::Uuid;
 #[derive(Debug, FromRow, Serialize, Deserialize)]
 pub struct Reminder {
     /// UUID of the reminder
-    pub id:         Uuid,
+    pub id: Uuid,
     /// UUID of the note
-    pub note_id:    Uuid,
+    pub note_id: Uuid,
     /// Date/time for the reminder
-    pub remind_at:  DateTime<Utc>,
+    pub remind_at: DateTime<Utc>,
     /// Completion status
-    pub is_done:    bool,
+    pub is_done: bool,
     /// Creation timestamp
     pub created_at: DateTime<Utc>,
     /// Last modification timestamp (triggered)

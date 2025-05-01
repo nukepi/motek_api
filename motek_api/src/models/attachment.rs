@@ -9,13 +9,13 @@ use uuid::Uuid;
 #[derive(Debug, FromRow, Serialize, Deserialize)]
 pub struct Attachment {
     /// UUID of the attachment
-    pub id:         Uuid,
+    pub id: Uuid,
     /// UUID of the associated note
-    pub note_id:    Uuid,
+    pub note_id: Uuid,
     /// Original file name
-    pub filename:   String,
+    pub filename: String,
     /// URL (or path) to the file
-    pub url:        String,
+    pub url: String,
     /// Timestamp when the attachment was added
     pub created_at: DateTime<Utc>,
 }

@@ -10,13 +10,13 @@ use uuid::Uuid;
 #[derive(Debug, FromRow, Serialize, Deserialize)]
 pub struct NoteVersion {
     /// UUID of the version
-    pub id:         Uuid,
+    pub id: Uuid,
     /// UUID of the note this version belongs to
-    pub note_id:    Uuid,
+    pub note_id: Uuid,
     /// Sequential version number (1, 2, 3…)
     pub version_no: i32,
     /// Snapshot of note content in JSON format
-    pub content:    Value,
+    pub content: Value,
     /// Version creation timestamp
     pub created_at: DateTime<Utc>,
 }

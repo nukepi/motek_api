@@ -9,11 +9,11 @@ use uuid::Uuid;
 #[derive(Clone, Debug, Serialize, Deserialize, FromRow)]
 pub struct User {
     /// Unique identifier for the user
-    pub id:           Uuid,
+    pub id: Uuid,
     /// User's email address (must be unique)
-    pub email:        String,
+    pub email: String,
     /// Hashed password for authentication
-    pub password:     String,
+    pub password: String,
     /// Timestamp when the user account was created
-    pub created_at:   NaiveDateTime,
+    pub created_at: NaiveDateTime,
 }

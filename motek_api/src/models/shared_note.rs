@@ -11,11 +11,11 @@ use uuid::Uuid;
 #[derive(Debug, FromRow, Serialize, Deserialize)]
 pub struct SharedNote {
     /// UUID of the user with whom the note is shared
-    pub user_id:    Uuid,
+    pub user_id: Uuid,
     /// UUID of the shared note
-    pub note_id:    Uuid,
+    pub note_id: Uuid,
     /// Access role: "viewer", "editor", or "owner"
-    pub role:       String,
+    pub role: String,
     /// Timestamp when access was granted
     pub granted_at: DateTime<Utc>,
 }

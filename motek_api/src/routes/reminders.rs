@@ -1,6 +1,6 @@
 use axum::{
     Router,
-    extract::{State, Path, Json},
+    extract::{Json, Path, State},
     http::StatusCode,
     routing::get,
 };
@@ -8,13 +8,13 @@ use chrono::{DateTime, Utc};
 use serde::Deserialize;
 use uuid::Uuid;
 
-use crate::state::AppState;
 use crate::models::reminder::Reminder;
+use crate::state::AppState;
 
 pub fn router() -> Router<AppState> {
     Router::new()
-        .route("/",      get(list_reminders).post(create_reminder))
-        .route("/{id}",   get(get_one).put(update).delete(delete_one))
+        .route("/", get(list_reminders).post(create_reminder))
+        .route("/{id}", get(get_one).put(update).delete(delete_one))
 }
 
 pub async fn list_reminders(
@@ -29,7 +29,7 @@ pub async fn list_reminders(
 
 #[derive(Deserialize)]
 pub struct CreateReminder {
-    pub note_id:   Uuid,
+    pub note_id: Uuid,
     pub remind_at: DateTime<Utc>,
 }
 
@@ -38,14 +38,14 @@ pub async fn create_reminder(
     Json(p): Json<CreateReminder>,
 ) -> Result<(StatusCode, Json<Reminder>), (StatusCode, String)> {
     let r = sqlx::query_as::<_, Reminder>(
-            "INSERT INTO reminders (note_id,remind_at) \
-             VALUES ($1,$2) RETURNING *"
-        )
-        .bind(p.note_id)
-        .bind(p.remind_at)
-        .fetch_one(&state.pool)
-        .await
-        .map_err(|e| (StatusCode::BAD_REQUEST, e.to_string()))?;
+        "INSERT INTO reminders (note_id,remind_at) \
+             VALUES ($1,$2) RETURNING *",
+    )
+    .bind(p.note_id)
+    .bind(p.remind_at)
+    .fetch_one(&state.pool)
+    .await
+    .map_err(|e| (StatusCode::BAD_REQUEST, e.to_string()))?;
     Ok((StatusCode::CREATED, Json(r)))
 }
 
@@ -53,9 +53,7 @@ pub async fn get_one(
     State(state): State<AppState>,
     Path(id): Path<Uuid>,
 ) -> Result<(StatusCode, Json<Reminder>), (StatusCode, String)> {
-    let opt = sqlx::query_as::<_, Reminder>(
-            "SELECT * FROM reminders WHERE id=$1"
-        )
+    let opt = sqlx::query_as::<_, Reminder>("SELECT * FROM reminders WHERE id=$1")
         .bind(id)
         .fetch_optional(&state.pool)
         .await
@@ -70,19 +68,19 @@ pub async fn get_one(
 #[derive(Deserialize)]
 pub struct UpdateReminder {
     pub remind_at: Option<DateTime<Utc>>,
-    pub is_done:   Option<bool>,
+    pub is_done: Option<bool>,
 }
 
 pub async fn update(
     State(state): State<AppState>,
     Path(id): Path<Uuid>,
-    Json(p):  Json<UpdateReminder>,
+    Json(p): Json<UpdateReminder>,
 ) -> Result<(StatusCode, Json<Reminder>), (StatusCode, String)> {
     sqlx::query(
         r#"UPDATE reminders SET
             remind_at = COALESCE($2, remind_at),
             is_done   = COALESCE($3, is_done)
-          WHERE id = $1"#
+          WHERE id = $1"#,
     )
     .bind(id)
     .bind(p.remind_at)

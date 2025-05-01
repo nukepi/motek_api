@@ -1,16 +1,16 @@
+use crate::database::token::create_jwt;
+use crate::models::user::User;
+use crate::state::AppState;
 use axum::{
     Router,
-    extract::{State, Json},
+    extract::{Json, State},
     http::StatusCode,
     routing::post,
 };
-use serde::{Deserialize, Serialize};
 use bcrypt::{hash, verify};
+use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
 use uuid::Uuid;
-use crate::models::user::User;
-use crate::state::AppState;
-use crate::database::token::create_jwt;
 
 #[derive(Deserialize)]
 pub struct RegisterPayload {
@@ -32,7 +32,7 @@ pub struct AuthResponse {
 pub fn router() -> Router<AppState> {
     Router::new()
         .route("/register", post(register))
-        .route("/login",    post(login))
+        .route("/login", post(login))
 }
 
 // pomocniczo
@@ -49,9 +49,7 @@ pub async fn register(
     Json(payload): Json<RegisterPayload>,
 ) -> Result<(StatusCode, Json<String>), (StatusCode, String)> {
     // 1) duplikat?
-    if sqlx::query_scalar::<_, Uuid>(
-            "SELECT id FROM users WHERE email = $1 LIMIT 1"
-        )
+    if sqlx::query_scalar::<_, Uuid>("SELECT id FROM users WHERE email = $1 LIMIT 1")
         .bind(&payload.email)
         .fetch_optional(&state.pool)
         .await
@@ -66,14 +64,12 @@ pub async fn register(
         .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
 
     // 3) insert
-    sqlx::query_as::<_, User>(
-        "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *"
-    )
-    .bind(&payload.email)
-    .bind(&password_hash)
-    .fetch_one(&state.pool)
-    .await
-    .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
+    sqlx::query_as::<_, User>("INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *")
+        .bind(&payload.email)
+        .bind(&password_hash)
+        .fetch_one(&state.pool)
+        .await
+        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
 
     Ok((StatusCode::CREATED, Json("User registered".to_string())))
 }

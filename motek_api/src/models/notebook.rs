@@ -10,13 +10,13 @@ use uuid::Uuid;
 #[derive(Debug, FromRow, Serialize, Deserialize)]
 pub struct Notebook {
     /// UUID folderu
-    pub id:         Uuid,
+    pub id: Uuid,
     /// UUID właściciela (users.id)
-    pub user_id:    Uuid,
+    pub user_id: Uuid,
     /// Nazwa folderu
-    pub name:       String,
+    pub name: String,
     /// Opcjonalny UUID folderu nadrzędnego
-    pub parent_id:  Option<Uuid>,
+    pub parent_id: Option<Uuid>,
     /// Data utworzenia
     pub created_at: DateTime<Utc>,
     /// Data ostatniej modyfikacji (trigger)

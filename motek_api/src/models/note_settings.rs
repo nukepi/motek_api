@@ -9,17 +9,17 @@ use uuid::Uuid;
 #[derive(Debug, FromRow, Serialize, Deserialize)]
 pub struct NoteSettings {
     /// UUID of the settings record
-    pub id:          Uuid,
+    pub id: Uuid,
     /// UUID of the note these settings apply to
-    pub note_id:     Uuid,
+    pub note_id: Uuid,
     /// Display color for the note (e.g., "#ffffff")
-    pub color:       String,
+    pub color: String,
     /// Font for rendering (e.g., "sans-serif")
-    pub font:        String,
+    pub font: String,
     /// View mode: "plain" / "rich" / "markdown"
-    pub view_mode:   String,
+    pub view_mode: String,
     /// Creation timestamp
-    pub created_at:  DateTime<Utc>,
+    pub created_at: DateTime<Utc>,
     /// Last update timestamp (triggered)
-    pub updated_at:  DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
 }

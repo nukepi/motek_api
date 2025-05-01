@@ -1,12 +1,12 @@
-use std::sync::Arc;
+use crate::utils::config_loader::Config;
 use sqlx::Pool;
 use sqlx::Postgres;
-use crate::utils::config_loader::Config;
+use std::sync::Arc;
 
 #[derive(Clone)]
 pub struct AppState {
     pub pool: Pool<Postgres>,
-    pub config: Arc<Config>
+    pub config: Arc<Config>,
 }
 
 impl AppState {

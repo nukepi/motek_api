@@ -1,17 +1,16 @@
 // utils/config_loader.rs
 
 use serde::Deserialize;
-use std::fs;
 use std::env;
+use std::fs;
 
 #[derive(Clone, Debug, Deserialize)]
 pub struct Config {
     pub database_url: String,
     pub jwt_secret: Option<String>,
-    pub server_address:String,
+    pub server_address: String,
     pub port: u16,
 }
-
 
 impl Config {
     pub fn load() -> Self {
