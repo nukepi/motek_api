@@ -31,7 +31,10 @@ pub async fn list(
         .await
         .map_err(|e| {
             error!("DB error fetching shared notes for user {}: {}", user_id, e);
-            (StatusCode::INTERNAL_SERVER_ERROR, "Database error".to_string())
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "Database error".to_string(),
+            )
         })?;
     Ok((StatusCode::OK, Json(rows)))
 }
@@ -88,7 +91,10 @@ pub async fn get_one(
     .await
     .map_err(|e| {
         error!("DB error fetching shared note: {}", e);
-        (StatusCode::INTERNAL_SERVER_ERROR, "Database error".to_string())
+        (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            "Database error".to_string(),
+        )
     })?;
     if let Some(s) = opt {
         Ok((StatusCode::OK, Json(s)))
@@ -149,7 +155,10 @@ pub async fn delete_one(
         .await
         .map_err(|e| {
             error!("DB error deleting shared note: {}", e);
-            (StatusCode::INTERNAL_SERVER_ERROR, "Database error".to_string())
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "Database error".to_string(),
+            )
         })?;
     Ok(StatusCode::NO_CONTENT)
 }

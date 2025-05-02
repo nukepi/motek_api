@@ -131,3 +131,10 @@ pub async fn revoke_all_refresh_tokens_for_user(
         .await?;
     Ok(res.rows_affected())
 }
+
+pub async fn cleanup_expired_refresh_tokens(pool: &PgPool) -> Result<u64, sqlx::Error> {
+    let res = sqlx::query("DELETE FROM refresh_tokens WHERE expires_at < NOW() OR revoked = TRUE")
+        .execute(pool)
+        .await?;
+    Ok(res.rows_affected())
+}

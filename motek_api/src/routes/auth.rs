@@ -1,9 +1,9 @@
 use crate::{
+    database::token::revoke_all_refresh_tokens_for_user,
     database::token::{create_jwt, create_refresh_token, get_refresh_token, revoke_refresh_token},
     models::user::User,
-    utils::extractors::AuthUser,
-    database::token::revoke_all_refresh_tokens_for_user,
     state::AppState,
+    utils::extractors::AuthUser,
     utils::validators::{validate_email, validate_password},
 };
 
@@ -69,7 +69,7 @@ pub fn router() -> Router<AppState> {
         .route("/login", post(login))
         .route("/refresh", post(refresh_jwt))
         .route("/logout", post(logout))
-        .route("/logout_all", post(logout_all)) 
+        .route("/logout_all", post(logout_all))
 }
 
 /// Helper to fetch user by email.
@@ -100,12 +100,8 @@ pub async fn register(
     }
 
     // Validate password and email
-    validate_password(&payload.password).map_err(|msg| {
-        (StatusCode::BAD_REQUEST, msg)
-    })?;
-    validate_email(&payload.email).map_err(|msg| {
-        (StatusCode::BAD_REQUEST, msg)
-    })?;
+    validate_password(&payload.password).map_err(|msg| (StatusCode::BAD_REQUEST, msg))?;
+    validate_email(&payload.email).map_err(|msg| (StatusCode::BAD_REQUEST, msg))?;
 
     // 1) Check for duplicate email
     if sqlx::query_scalar::<_, Uuid>("SELECT id FROM users WHERE email = $1 LIMIT 1")
@@ -166,7 +162,11 @@ pub async fn login(
     State(state): State<AppState>,
     Json(payload): Json<LoginRequest>,
 ) -> Result<impl IntoResponse, (StatusCode, String)> {
-    info!("Login attempt for email: {}, ip: {}", &payload.email, addr.ip());
+    info!(
+        "Login attempt for email: {}, ip: {}",
+        &payload.email,
+        addr.ip()
+    );
     let ip = addr.ip();
     let allowed = state.login_limiter.check_and_update(ip).await;
     if !allowed {
@@ -183,17 +183,26 @@ pub async fn login(
         Ok(user) => user,
         Err(sqlx::Error::RowNotFound) => {
             info!("Login failed: user not found for email {}", &payload.email);
-            return Err((StatusCode::UNAUTHORIZED, "Invalid email or password".to_string()));
+            return Err((
+                StatusCode::UNAUTHORIZED,
+                "Invalid email or password".to_string(),
+            ));
         }
         Err(e) => {
             error!("DB error during login for {}: {}", &payload.email, e);
-            return Err((StatusCode::INTERNAL_SERVER_ERROR, "Database error".to_string()));
+            return Err((
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "Database error".to_string(),
+            ));
         }
     };
 
     if !verify(&payload.password, &user.password).unwrap_or(false) {
         info!("Login failed: invalid password for {}", &payload.email);
-        return Err((StatusCode::UNAUTHORIZED, "Invalid email or password".to_string()));
+        return Err((
+            StatusCode::UNAUTHORIZED,
+            "Invalid email or password".to_string(),
+        ));
     }
 
     let jwt_secret = state.config.jwt_secret.as_deref().unwrap_or("sekret_dev");
@@ -210,7 +219,10 @@ pub async fn login(
         Ok(rt) => rt.token,
         Err(e) => {
             error!("Refresh token creation error for {}: {}", &payload.email, e);
-            return Err((StatusCode::INTERNAL_SERVER_ERROR, "Refresh token error".to_string()));
+            return Err((
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "Refresh token error".to_string(),
+            ));
         }
     };
 
@@ -218,7 +230,10 @@ pub async fn login(
         "User {} logged in successfully (platform: {})",
         &payload.email, &payload.platform
     );
-    Ok(Json(LoginResponse { token, refresh_token }))
+    Ok(Json(LoginResponse {
+        token,
+        refresh_token,
+    }))
 }
 
 /// Refresh JWT using a valid refresh token.
@@ -227,18 +242,27 @@ pub async fn refresh_jwt(
     State(state): State<AppState>,
     Json(payload): Json<RefreshRequest>,
 ) -> Result<impl IntoResponse, (StatusCode, String)> {
-    info!("Refresh attempt with refresh_token={}...", &payload.refresh_token[..8]);
+    info!(
+        "Refresh attempt with refresh_token={}...",
+        &payload.refresh_token[..8]
+    );
     let rec = match get_refresh_token(&state.pool, &payload.refresh_token).await {
         Ok(Some(rt)) => rt,
         _ => {
             error!("Invalid refresh token");
-            return Err((StatusCode::UNAUTHORIZED, "Invalid refresh token".to_string()));
+            return Err((
+                StatusCode::UNAUTHORIZED,
+                "Invalid refresh token".to_string(),
+            ));
         }
     };
 
     if rec.revoked || rec.expires_at < chrono::Utc::now() {
         error!("Refresh token is expired or revoked");
-        return Err((StatusCode::UNAUTHORIZED, "Refresh token expired or revoked".to_string()));
+        return Err((
+            StatusCode::UNAUTHORIZED,
+            "Refresh token expired or revoked".to_string(),
+        ));
     }
 
     let jwt_secret = state.config.jwt_secret.as_deref().unwrap_or("sekret_dev");
@@ -258,19 +282,51 @@ pub async fn refresh_jwt(
 /// After this, the refresh token cannot be used again.
 pub async fn logout(
     State(state): State<AppState>,
+    AuthUser(user_id): AuthUser,
     Json(payload): Json<LogoutRequest>,
 ) -> Result<StatusCode, (StatusCode, String)> {
-    info!("Logout attempt with refresh_token={}...", &payload.refresh_token[..8]);
+    info!(
+        "Logout attempt with refresh_token={}...",
+        &payload.refresh_token[..8]
+    );
+    let belongs = match token_belongs_to_user(&state.pool, &payload.refresh_token, user_id).await {
+        Ok(b) => b,
+        Err(e) => return Err((StatusCode::INTERNAL_SERVER_ERROR, format!("DB error: {e}"))),
+    };
+    if !belongs {
+        return Err((
+            StatusCode::FORBIDDEN,
+            "Token does not belong to user".to_string(),
+        ));
+    }
     match revoke_refresh_token(&state.pool, &payload.refresh_token).await {
         Ok(_) => {
             info!("Refresh token revoked successfully");
             Ok(StatusCode::NO_CONTENT)
-        },
+        }
         Err(e) => {
             error!("Logout error: {}", e);
-            Err((StatusCode::INTERNAL_SERVER_ERROR, "Logout error".to_string()))
+            Err((
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "Logout error".to_string(),
+            ))
         }
     }
+}
+
+pub async fn token_belongs_to_user(
+    pool: &PgPool,
+    refresh_token: &str,
+    user_id: Uuid,
+) -> Result<bool, sqlx::Error> {
+    let rec = sqlx::query_scalar!(
+        "SELECT EXISTS(SELECT 1 FROM refresh_tokens WHERE token = $1 AND user_id = $2)",
+        refresh_token,
+        user_id
+    )
+    .fetch_one(pool)
+    .await?;
+    Ok(rec.unwrap_or(false))
 }
 
 /// Logout from all devices (revoke all refresh tokens for this user).
@@ -282,7 +338,10 @@ pub async fn logout_all(
         Ok(_) => Ok(StatusCode::NO_CONTENT),
         Err(e) => {
             error!("Logout all error: {}", e);
-            Err((StatusCode::INTERNAL_SERVER_ERROR, "Logout all error".to_string()))
+            Err((
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "Logout all error".to_string(),
+            ))
         }
     }
 }

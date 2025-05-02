@@ -1,8 +1,10 @@
 //! Application state container.
 //! Holds database connection pool, configuration, and IP registration limiter.
 
-use crate::utils::ip_limiter::IpLimiter;
-use crate::utils::config_loader::Config;
+use crate::{
+    utils::config_loader::Config,
+    utils::ip_limiter::IpLimiter,
+};
 use sqlx::Pool;
 use sqlx::Postgres;
 use std::sync::Arc;

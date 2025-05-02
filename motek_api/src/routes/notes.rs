@@ -35,7 +35,10 @@ pub async fn list_notes(
     .await
     .map_err(|e| {
         error!("DB error fetching notes for user {}: {}", user_id, e);
-        (StatusCode::INTERNAL_SERVER_ERROR, "Database error".to_string())
+        (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            "Database error".to_string(),
+        )
     })?;
 
     Ok((StatusCode::OK, Json(NotesListResponse(notes))))
@@ -92,7 +95,10 @@ pub async fn get_note(
         .await
         .map_err(|e| {
             error!("DB error fetching note {} for user {}: {}", id, user_id, e);
-            (StatusCode::INTERNAL_SERVER_ERROR, "Database error".to_string())
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "Database error".to_string(),
+            )
         })?;
 
     if let Some(n) = opt {
@@ -165,7 +171,10 @@ pub async fn delete_note(
         .await
         .map_err(|e| {
             error!("DB error deleting note {} for user {}: {}", id, user_id, e);
-            (StatusCode::INTERNAL_SERVER_ERROR, "Database error".to_string())
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "Database error".to_string(),
+            )
         })?;
 
     if result.rows_affected() == 0 {

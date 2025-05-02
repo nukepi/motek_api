@@ -7,6 +7,7 @@ use crate::{
     routes::{api, auth},
     state::AppState,
     utils::auth::auth_middleware,
+    database::token::cleanup_expired_refresh_tokens,
 };
 use axum::{Router, middleware};
 use axum_server::Server;
@@ -86,6 +87,10 @@ pub async fn run() -> anyhow::Result<()> {
         "Server has shut down at http://{}:{}",
         state.config.server_address, state.config.port
     );
+
+    tokio::spawn(async move {
+        let _ = cleanup_expired_refresh_tokens(&state.pool).await;
+    });
 
     Ok(())
 }

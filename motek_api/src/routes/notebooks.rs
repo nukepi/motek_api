@@ -35,7 +35,10 @@ pub async fn list(
             .await
             .map_err(|e| {
                 error!("DB error fetching notebooks for user {}: {}", user_id, e);
-                (StatusCode::INTERNAL_SERVER_ERROR, "Database error".to_string())
+                (
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    "Database error".to_string(),
+                )
             })?;
     Ok((StatusCode::OK, Json(rows)))
 }
@@ -87,7 +90,10 @@ pub async fn get_one(
                     "DB error fetching notebook {} for user {}: {}",
                     id, user_id, e
                 );
-                (StatusCode::INTERNAL_SERVER_ERROR, "Database error".to_string())
+                (
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    "Database error".to_string(),
+                )
             })?;
 
     if let Some(nb) = opt {
@@ -158,7 +164,10 @@ pub async fn delete_one(
                 "DB error deleting notebook {} for user {}: {}",
                 id, user_id, e
             );
-            (StatusCode::INTERNAL_SERVER_ERROR, "Database error".to_string())
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "Database error".to_string(),
+            )
         })?;
 
     if result.rows_affected() == 0 {
@@ -187,7 +196,10 @@ pub async fn list_notes_in_notebook(
             "DB error listing notes in notebook {} for user {}: {}",
             nb_id, user_id, e
         );
-        (StatusCode::INTERNAL_SERVER_ERROR, "Database error".to_string())
+        (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            "Database error".to_string(),
+        )
     })?;
     Ok((StatusCode::OK, Json(notes)))
 }

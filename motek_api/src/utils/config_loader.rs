@@ -13,7 +13,7 @@ pub struct Config {
     pub server_address: String,
     pub port: u16,
     pub register_ip_limit_per_hour: Option<u32>,
-    pub login_ip_limit_per_hour: Option<u32>
+    pub login_ip_limit_per_hour: Option<u32>,
 }
 
 impl Config {
