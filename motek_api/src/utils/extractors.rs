@@ -1,12 +1,15 @@
 use axum::{
     extract::FromRequestParts,
-    http::{request::Parts, StatusCode},
+    http::{StatusCode, request::Parts},
     response::{IntoResponse, Response},
 };
+use tracing::info;
 use uuid::Uuid;
 
+/// Wrapper struct for authenticated user's UUID, extracted from request extensions.
 pub struct AuthUser(pub Uuid);
 
+/// Represents possible reasons for authentication extraction failure.
 #[derive(Debug)]
 pub enum AuthRejection {
     Missing,
@@ -16,7 +19,7 @@ impl IntoResponse for AuthRejection {
     fn into_response(self) -> Response {
         match self {
             AuthRejection::Missing => {
-                (StatusCode::UNAUTHORIZED, "Brak uwierzytelnionego użytkownika").into_response()
+                (StatusCode::UNAUTHORIZED, "No authenticated user found").into_response()
             }
         }
     }
@@ -28,13 +31,20 @@ where
 {
     type Rejection = AuthRejection;
 
+    /// Extracts AuthUser from request extensions.
+    /// Logs extraction result.
     async fn from_request_parts(parts: &mut Parts, _state: &S) -> Result<Self, Self::Rejection> {
-        // odczytujemy user_id z extensions
-        parts
-            .extensions
-            .get::<Uuid>()
-            .cloned()
-            .map(AuthUser)
-            .ok_or(AuthRejection::Missing)
+        let user_id = parts.extensions.get::<Uuid>().cloned();
+
+        match user_id {
+            Some(uid) => {
+                info!("Extracted authenticated user_id={}", uid);
+                Ok(AuthUser(uid))
+            }
+            None => {
+                info!("No authenticated user found in request extensions");
+                Err(AuthRejection::Missing)
+            }
+        }
     }
 }

@@ -1,3 +1,5 @@
+//! UserSettings model – user-specific settings.
+
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;

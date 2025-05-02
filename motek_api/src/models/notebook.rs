@@ -1,24 +1,26 @@
+//! Notebook model – user folder for notes (supports hierarchy).
+
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 use uuid::Uuid;
 
-/// Notebook – folder na notatki użytkownika.
-/// Relacje:
-///   • user_id → users.id (właściciel folderu)
-///   • parent_id → notebooks.id (opcjonalny folder nadrzędny, hierarchia)
+/// Notebook – folder for user notes.
+/// Relations:
+///   • user_id → users.id (folder owner)
+///   • parent_id → notebooks.id (optional parent folder, hierarchy)
 #[derive(Debug, FromRow, Serialize, Deserialize)]
 pub struct Notebook {
-    /// UUID folderu
+    /// UUID of the folder
     pub id: Uuid,
-    /// UUID właściciela (users.id)
+    /// UUID of the owner (users.id)
     pub user_id: Uuid,
-    /// Nazwa folderu
+    /// Folder name
     pub name: String,
-    /// Opcjonalny UUID folderu nadrzędnego
+    /// Optional UUID of the parent folder
     pub parent_id: Option<Uuid>,
-    /// Data utworzenia
+    /// Creation date
     pub created_at: DateTime<Utc>,
-    /// Data ostatniej modyfikacji (trigger)
+    /// Last modification date (triggered)
     pub updated_at: DateTime<Utc>,
 }

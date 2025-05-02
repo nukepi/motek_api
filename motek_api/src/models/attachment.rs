@@ -1,3 +1,5 @@
+//! Attachment model – represents a file attached to a note.
+
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;

@@ -1,3 +1,5 @@
+//! NoteSettings model – per-note display and editor settings.
+
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;

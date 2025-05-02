@@ -1,7 +1,10 @@
+//! Reminder model – for note reminders.
+
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 use uuid::Uuid;
+
 /// Reminder – a reminder associated with a note.
 /// Relations:
 ///   • note_id → notes.id (the note for which the reminder is set)

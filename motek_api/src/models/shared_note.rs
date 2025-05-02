@@ -1,13 +1,14 @@
+//! SharedNote model – information about sharing a note with other users.
+
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 use uuid::Uuid;
-/*
+
 /// SharedNote – information about sharing a note with other users.
 /// Relations:
 ///   • user_id → users.id (external user)
 ///   • note_id → notes.id (shared note)
-/// */
 #[derive(Debug, FromRow, Serialize, Deserialize)]
 pub struct SharedNote {
     /// UUID of the user with whom the note is shared
