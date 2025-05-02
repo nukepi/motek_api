@@ -39,7 +39,7 @@ pub async fn list_attachments(
     .await
     .map_err(|e| {
         error!("Failed to fetch attachments for user {}: {}", user_id, e);
-        (StatusCode::INTERNAL_SERVER_ERROR, e.to_string())
+        (StatusCode::INTERNAL_SERVER_ERROR, "Database error".to_string())
     })?;
     info!(
         "User {} successfully fetched {} attachments",
@@ -84,7 +84,7 @@ pub async fn create_attachment(
             "Failed to create attachment for note {} by user {}: {}",
             payload.note_id, user_id, e
         );
-        (StatusCode::BAD_REQUEST, e.to_string())
+        (StatusCode::BAD_REQUEST, "Invalid request".to_string())
     })?;
     info!(
         "Attachment '{}' created with id {} for note {} by user {}",
@@ -114,7 +114,7 @@ pub async fn fetch_attachment(
                 "Failed to fetch attachment {} for user {}: {}",
                 id, user_id, e
             );
-            (StatusCode::INTERNAL_SERVER_ERROR, e.to_string())
+            (StatusCode::INTERNAL_SERVER_ERROR, "Database error".to_string())
         })?;
 
     if let Some(att) = opt {
@@ -156,7 +156,7 @@ pub async fn remove_attachment(
                 "Failed to remove attachment {} by user {}: {}",
                 id, user_id, e
             );
-            Err((StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))
+            Err((StatusCode::INTERNAL_SERVER_ERROR, "Database error".to_string()))
         }
     }
 }

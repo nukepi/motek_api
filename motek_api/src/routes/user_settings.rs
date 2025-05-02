@@ -29,7 +29,7 @@ pub async fn list(
         .await
         .map_err(|e| {
             error!("Failed to fetch user settings for user {}: {}", user_id, e);
-            (StatusCode::INTERNAL_SERVER_ERROR, e.to_string())
+            (StatusCode::INTERNAL_SERVER_ERROR, "Database error".to_string())
         })?;
     info!("User {} fetched {} user settings", user_id, rows.len());
     Ok((StatusCode::OK, Json(rows)))
@@ -83,7 +83,7 @@ pub async fn create(
     .await
     .map_err(|e| {
         error!("Failed to create user settings for user {}: {}", user_id, e);
-        (StatusCode::BAD_REQUEST, e.to_string())
+        (StatusCode::BAD_REQUEST, "Invalid request".to_string())
     })?;
     info!(
         "User {} successfully created user settings id={}",
@@ -111,7 +111,7 @@ pub async fn get_one(
                     "Failed to fetch user_settings {} for user {}: {}",
                     id, user_id, e
                 );
-                (StatusCode::INTERNAL_SERVER_ERROR, e.to_string())
+                (StatusCode::INTERNAL_SERVER_ERROR, "Database error".to_string())
             })?;
     if let Some(us) = opt {
         info!("User {} fetched user_settings id={}", user_id, id);
@@ -169,7 +169,7 @@ pub async fn update(
             "Failed to update user_settings {} for user {}: {}",
             id, user_id, e
         );
-        (StatusCode::BAD_REQUEST, e.to_string())
+        (StatusCode::BAD_REQUEST, "Invalid request".to_string())
     })?;
 
     if res.rows_affected() == 0 {
@@ -201,7 +201,7 @@ pub async fn delete_one(
                 "Failed to delete user_settings {} for user {}: {}",
                 id, user_id, e
             );
-            (StatusCode::INTERNAL_SERVER_ERROR, e.to_string())
+            (StatusCode::INTERNAL_SERVER_ERROR, "Database error".to_string())
         })?;
     if res.rows_affected() == 0 {
         info!(

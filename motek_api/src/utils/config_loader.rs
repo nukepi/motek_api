@@ -12,7 +12,8 @@ pub struct Config {
     pub jwt_secret: Option<String>,
     pub server_address: String,
     pub port: u16,
-    pub ip_limit_per_hour: Option<u32>,
+    pub register_ip_limit_per_hour: Option<u32>,
+    pub login_ip_limit_per_hour: Option<u32>
 }
 
 impl Config {

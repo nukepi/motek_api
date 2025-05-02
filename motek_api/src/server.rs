@@ -1,23 +1,27 @@
 //! Server setup and runner.
 //! Combines public and protected routes, applies middleware, and starts the HTTP server.
 
-use crate::routes::public;
-use crate::utils::config_loader::Config;
 use crate::{
+    routes::public,
+    utils::config_loader::Config,
     routes::{api, auth},
     state::AppState,
     utils::auth::auth_middleware,
 };
 use axum::{Router, middleware};
 use axum_server::Server;
+use axum::http::{Method, header, HeaderValue};
 use sqlx::PgPool;
 use std::net::{SocketAddr, TcpListener};
 use tower_http::trace::TraceLayer;
 use tracing::info;
+use tower_http::cors::CorsLayer;
+
 
 /// Runs the HTTP server.
 /// Loads configuration, connects to the database, sets up state and routes, and starts listening.
 pub async fn run() -> anyhow::Result<()> {
+
     // Load application configuration.
     let config = Config::load();
     info!("Configuration loaded");
@@ -28,6 +32,16 @@ pub async fn run() -> anyhow::Result<()> {
 
     // Initialize application state.
     let state = AppState::new(pool, config);
+
+    let server_address = state.config.server_address.clone();
+    let server_port = state.config.port;
+    let origin = format!("{}:{}", server_address, server_port); 
+
+    let cors_layer = CorsLayer::new()
+        .allow_origin(origin.parse::<HeaderValue>().unwrap())
+        .allow_methods([Method::GET, Method::POST, Method::PUT, Method::DELETE, Method::OPTIONS])
+        .allow_credentials(true)
+        .allow_headers([header::AUTHORIZATION, header::CONTENT_TYPE]);
 
     // Set up public endpoints.
     let api_public = Router::new()
@@ -46,7 +60,10 @@ pub async fn run() -> anyhow::Result<()> {
         .with_state(state.clone());
 
     // Merge all routers into the main app.
-    let app = Router::new().merge(api_public).merge(api_protected);
+    let app = Router::new()
+        .merge(api_public)
+        .merge(api_protected)
+        .layer(cors_layer);
 
     // Bind TCP listener to configured address and port.
     let listener = TcpListener::bind((&*state.config.server_address, state.config.port))?;

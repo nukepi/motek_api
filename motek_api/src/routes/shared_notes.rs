@@ -31,7 +31,7 @@ pub async fn list(
         .await
         .map_err(|e| {
             error!("DB error fetching shared notes for user {}: {}", user_id, e);
-            (StatusCode::INTERNAL_SERVER_ERROR, e.to_string())
+            (StatusCode::INTERNAL_SERVER_ERROR, "Database error".to_string())
         })?;
     Ok((StatusCode::OK, Json(rows)))
 }
@@ -65,7 +65,7 @@ pub async fn create(
     .await
     .map_err(|e| {
         error!("DB error creating shared note: {}", e);
-        (StatusCode::BAD_REQUEST, e.to_string())
+        (StatusCode::BAD_REQUEST, "Invalid request".to_string())
     })?;
     Ok((StatusCode::CREATED, Json(s)))
 }
@@ -88,7 +88,7 @@ pub async fn get_one(
     .await
     .map_err(|e| {
         error!("DB error fetching shared note: {}", e);
-        (StatusCode::INTERNAL_SERVER_ERROR, e.to_string())
+        (StatusCode::INTERNAL_SERVER_ERROR, "Database error".to_string())
     })?;
     if let Some(s) = opt {
         Ok((StatusCode::OK, Json(s)))
@@ -127,7 +127,7 @@ pub async fn update(
     .await
     .map_err(|e| {
         error!("DB error updating shared note: {}", e);
-        (StatusCode::BAD_REQUEST, e.to_string())
+        (StatusCode::BAD_REQUEST, "Invalid request".to_string())
     })?;
 
     get_one(State(state), Path((note_id, user_id))).await
@@ -149,7 +149,7 @@ pub async fn delete_one(
         .await
         .map_err(|e| {
             error!("DB error deleting shared note: {}", e);
-            (StatusCode::INTERNAL_SERVER_ERROR, e.to_string())
+            (StatusCode::INTERNAL_SERVER_ERROR, "Database error".to_string())
         })?;
     Ok(StatusCode::NO_CONTENT)
 }

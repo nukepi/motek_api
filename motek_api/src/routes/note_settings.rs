@@ -36,7 +36,7 @@ pub async fn list(
             "DB error fetching note settings for user {}: {}",
             user_id, e
         );
-        (StatusCode::INTERNAL_SERVER_ERROR, e.to_string())
+        (StatusCode::INTERNAL_SERVER_ERROR, "Database error".to_string())
     })?;
     Ok((StatusCode::OK, Json(rows)))
 }
@@ -71,7 +71,7 @@ pub async fn create(
             "DB error creating note settings for note_id {}: {}",
             p.note_id, e
         );
-        (StatusCode::BAD_REQUEST, e.to_string())
+        (StatusCode::BAD_REQUEST, "Invalid request".to_string())
     })?;
     Ok((StatusCode::CREATED, Json(ns)))
 }
@@ -89,7 +89,7 @@ pub async fn get_one(
         .await
         .map_err(|e| {
             error!("DB error fetching note settings {}: {}", id, e);
-            (StatusCode::INTERNAL_SERVER_ERROR, e.to_string())
+            (StatusCode::INTERNAL_SERVER_ERROR, "Database error".to_string())
         })?;
 
     if let Some(ns) = opt {
@@ -130,7 +130,7 @@ pub async fn update(
     .await
     .map_err(|e| {
         error!("DB error updating note settings {}: {}", id, e);
-        (StatusCode::BAD_REQUEST, e.to_string())
+        (StatusCode::BAD_REQUEST, "Invalid request".to_string())
     })?;
 
     get_one(State(state), Path(id)).await
@@ -149,7 +149,7 @@ pub async fn delete_one(
         .await
         .map_err(|e| {
             error!("DB error deleting note settings {}: {}", id, e);
-            (StatusCode::INTERNAL_SERVER_ERROR, e.to_string())
+            (StatusCode::INTERNAL_SERVER_ERROR, "Database error".to_string())
         })?;
     Ok(StatusCode::NO_CONTENT)
 }

@@ -6,7 +6,7 @@ edition = "2024"
 [dependencies]
 async-trait = "0.1.88"
 tower = { version = "0.5.2" }
-tower-http = { version = "0.6.2", features = ["auth", "trace"] }
+tower-http = { version = "0.6.2", features = ["auth", "trace","cors"] }
 argon2 = { version = "0.5.3", default-features = false, features = ["std", "password-hash"] }
 rand = "0.9.1"
 toml = "0.8.22"

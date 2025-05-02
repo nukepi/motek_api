@@ -35,7 +35,7 @@ pub async fn list(
             .await
             .map_err(|e| {
                 error!("DB error fetching notebooks for user {}: {}", user_id, e);
-                (StatusCode::INTERNAL_SERVER_ERROR, e.to_string())
+                (StatusCode::INTERNAL_SERVER_ERROR, "Database error".to_string())
             })?;
     Ok((StatusCode::OK, Json(rows)))
 }
@@ -64,7 +64,7 @@ pub async fn create(
     .await
     .map_err(|e| {
         error!("DB error creating notebook for user {}: {}", user_id, e);
-        (StatusCode::BAD_REQUEST, e.to_string())
+        (StatusCode::BAD_REQUEST, "Invalid request".to_string())
     })?;
     Ok((StatusCode::CREATED, Json(nb)))
 }
@@ -87,7 +87,7 @@ pub async fn get_one(
                     "DB error fetching notebook {} for user {}: {}",
                     id, user_id, e
                 );
-                (StatusCode::INTERNAL_SERVER_ERROR, e.to_string())
+                (StatusCode::INTERNAL_SERVER_ERROR, "Database error".to_string())
             })?;
 
     if let Some(nb) = opt {
@@ -129,7 +129,7 @@ pub async fn update(
             "DB error updating notebook {} for user {}: {}",
             id, user_id, e
         );
-        (StatusCode::BAD_REQUEST, e.to_string())
+        (StatusCode::BAD_REQUEST, "Invalid request".to_string())
     })?;
 
     if result.rows_affected() == 0 {
@@ -158,7 +158,7 @@ pub async fn delete_one(
                 "DB error deleting notebook {} for user {}: {}",
                 id, user_id, e
             );
-            (StatusCode::INTERNAL_SERVER_ERROR, e.to_string())
+            (StatusCode::INTERNAL_SERVER_ERROR, "Database error".to_string())
         })?;
 
     if result.rows_affected() == 0 {
@@ -187,7 +187,7 @@ pub async fn list_notes_in_notebook(
             "DB error listing notes in notebook {} for user {}: {}",
             nb_id, user_id, e
         );
-        (StatusCode::INTERNAL_SERVER_ERROR, e.to_string())
+        (StatusCode::INTERNAL_SERVER_ERROR, "Database error".to_string())
     })?;
     Ok((StatusCode::OK, Json(notes)))
 }

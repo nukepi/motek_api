@@ -7,13 +7,13 @@ use tracing::{info, warn};
 
 /// Limits the number of registration attempts per IP address within a given time frame.
 #[derive(Clone)]
-pub struct IpRegisterLimiter {
+pub struct IpLimiter {
     // IpAddr -> list of registration times within the last hour
     pub map: Arc<Mutex<HashMap<IpAddr, Vec<SystemTime>>>>,
     pub per_hour: u32,
 }
 
-impl IpRegisterLimiter {
+impl IpLimiter {
     /// Creates a new limiter with a given per-hour limit.
     pub fn new(per_hour: u32) -> Self {
         Self {

@@ -34,7 +34,7 @@ pub async fn list_reminders(
     .await
     .map_err(|e| {
         error!("DB error fetching reminders for user {}: {}", user_id, e);
-        (StatusCode::INTERNAL_SERVER_ERROR, e.to_string())
+        (StatusCode::INTERNAL_SERVER_ERROR, "Database error".to_string())
     })?;
     Ok((StatusCode::OK, Json(rows)))
 }
@@ -65,7 +65,7 @@ pub async fn create_reminder(
             "DB error creating reminder for note_id {}: {}",
             p.note_id, e
         );
-        (StatusCode::BAD_REQUEST, e.to_string())
+        (StatusCode::BAD_REQUEST, "Invalid request".to_string())
     })?;
     Ok((StatusCode::CREATED, Json(r)))
 }
@@ -83,7 +83,7 @@ pub async fn get_one(
         .await
         .map_err(|e| {
             error!("DB error fetching reminder {}: {}", id, e);
-            (StatusCode::INTERNAL_SERVER_ERROR, e.to_string())
+            (StatusCode::INTERNAL_SERVER_ERROR, "Database error".to_string())
         })?;
     if let Some(r) = opt {
         Ok((StatusCode::OK, Json(r)))
@@ -120,7 +120,7 @@ pub async fn update(
     .await
     .map_err(|e| {
         error!("DB error updating reminder {}: {}", id, e);
-        (StatusCode::BAD_REQUEST, e.to_string())
+        (StatusCode::BAD_REQUEST, "Invalid request".to_string())
     })?;
     get_one(State(state), Path(id)).await
 }
@@ -138,7 +138,7 @@ pub async fn delete_one(
         .await
         .map_err(|e| {
             error!("DB error deleting reminder {}: {}", id, e);
-            (StatusCode::INTERNAL_SERVER_ERROR, e.to_string())
+            (StatusCode::INTERNAL_SERVER_ERROR, "Database error".to_string())
         })?;
     Ok(StatusCode::NO_CONTENT)
 }

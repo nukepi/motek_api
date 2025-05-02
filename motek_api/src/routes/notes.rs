@@ -35,7 +35,7 @@ pub async fn list_notes(
     .await
     .map_err(|e| {
         error!("DB error fetching notes for user {}: {}", user_id, e);
-        (StatusCode::INTERNAL_SERVER_ERROR, e.to_string())
+        (StatusCode::INTERNAL_SERVER_ERROR, "Database error".to_string())
     })?;
 
     Ok((StatusCode::OK, Json(NotesListResponse(notes))))
@@ -72,7 +72,7 @@ pub async fn create_note(
     .await
     .map_err(|e| {
         error!("DB error creating note for user {}: {}", user_id, e);
-        (StatusCode::BAD_REQUEST, e.to_string())
+        (StatusCode::BAD_REQUEST, "Invalid request".to_string())
     })?;
 
     Ok((StatusCode::CREATED, Json(note)))
@@ -92,7 +92,7 @@ pub async fn get_note(
         .await
         .map_err(|e| {
             error!("DB error fetching note {} for user {}: {}", id, user_id, e);
-            (StatusCode::INTERNAL_SERVER_ERROR, e.to_string())
+            (StatusCode::INTERNAL_SERVER_ERROR, "Database error".to_string())
         })?;
 
     if let Some(n) = opt {
@@ -140,7 +140,7 @@ pub async fn update_note(
     .await
     .map_err(|e| {
         error!("DB error updating note {} for user {}: {}", id, user_id, e);
-        (StatusCode::BAD_REQUEST, e.to_string())
+        (StatusCode::BAD_REQUEST, "Invalid request".to_string())
     })?;
 
     if result.rows_affected() == 0 {
@@ -165,7 +165,7 @@ pub async fn delete_note(
         .await
         .map_err(|e| {
             error!("DB error deleting note {} for user {}: {}", id, user_id, e);
-            (StatusCode::INTERNAL_SERVER_ERROR, e.to_string())
+            (StatusCode::INTERNAL_SERVER_ERROR, "Database error".to_string())
         })?;
 
     if result.rows_affected() == 0 {

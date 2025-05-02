@@ -7,3 +7,4 @@ pub mod reminder;
 pub mod shared_note;
 pub mod user;
 pub mod user_settings;
+pub mod refresh_token;
