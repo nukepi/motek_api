@@ -1,4 +1,0 @@
-/target
-config.dev.toml
-config.prod.toml
-Cargo.lock

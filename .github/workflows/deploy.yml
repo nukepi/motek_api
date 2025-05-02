@@ -1,0 +1,70 @@
+name: Deploy production
+
+on:
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Powód deploya (opcjonalnie)'
+        required: false
+        default: ''
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@v1
+        with:
+          toolchain: stable
+
+      - name: Build release
+        run: cargo build --release --manifest-path motek_api/Cargo.toml
+
+      - name: Utwórz katalog temp i skopiuj pliki
+        run: |
+          mkdir -p temp
+          cp motek_api/target/release/motek-service-api temp/
+
+      - name: Spakuj pliki do artifacts.tar.gz (w katalogu głównym)
+        run: tar czf artifacts.tar.gz -C temp motek-service-api
+
+      - name: Wylistuj archiwum (debug)
+        run: tar tf artifacts.tar.gz
+
+      - name: Skopiuj artifacts.tar.gz na serwer
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
+          source: artifacts.tar.gz
+          target: /opt/motek/motek_api/
+          overwrite: true
+
+      - name: Rozpakuj artifacts.tar.gz na serwerze i posprzątaj
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
+          script: |
+            cd /opt/motek/motek_api
+            tar xzf artifacts.tar.gz
+            rm artifacts.tar.gz
+            ls -l /opt/motek/motek_api
+
+      - name: Restart service on server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
+          script: |
+            systemctl restart motek
