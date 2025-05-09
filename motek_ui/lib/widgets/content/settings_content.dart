@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:motek_ui/l10n/app_localizations.dart';
+import 'package:motek_ui/services/settings_service.dart';
 
 class SettingsContent extends StatefulWidget {
   final bool isDarkMode;
   final Function(bool) onThemeChanged;
+  final Function(String) onLocaleChanged;
 
   const SettingsContent({
     super.key, 
     required this.isDarkMode, 
-    required this.onThemeChanged
+    required this.onThemeChanged,
+    required this.onLocaleChanged,
   });
 
   @override
@@ -16,10 +19,11 @@ class SettingsContent extends StatefulWidget {
 }
 
 class _SettingsContentState extends State<SettingsContent> {
-  bool _notificationsEnabled = true;
+  final SettingsService _settingsService = SettingsService();
+  late bool _notificationsEnabled;
   late bool _darkModeEnabled;
-  double _fontSize = 16.0;
-  String _selectedLanguage = 'pl';
+  late double _fontSize;
+  late String _selectedLanguage;
 
   final Map<String, String> _availableLanguages = {
     'pl': 'Polski',
@@ -30,16 +34,9 @@ class _SettingsContentState extends State<SettingsContent> {
   void initState() {
     super.initState();
     _darkModeEnabled = widget.isDarkMode;
-    
-    // Ustaw początkowy język na podstawie aktualnej lokalizacji
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final currentLocale = Localizations.localeOf(context).languageCode;
-      if (_availableLanguages.containsKey(currentLocale)) {
-        setState(() {
-          _selectedLanguage = currentLocale;
-        });
-      }
-    });
+    _notificationsEnabled = _settingsService.notificationsEnabled;
+    _fontSize = _settingsService.fontSize;
+    _selectedLanguage = _settingsService.locale.languageCode;
   }
 
   @override
@@ -99,11 +96,11 @@ class _SettingsContentState extends State<SettingsContent> {
       subtitle: Text(l10n.darkModeDescription),
       value: _darkModeEnabled,
       activeColor: Colors.amber,
-      onChanged: (value) {
+      onChanged: (value) async {
         setState(() {
           _darkModeEnabled = value;
-          widget.onThemeChanged(value);
         });
+        widget.onThemeChanged(value);
       },
     );
   }
@@ -118,10 +115,11 @@ class _SettingsContentState extends State<SettingsContent> {
         divisions: 6,
         label: _fontSize.round().toString(),
         activeColor: Colors.amber,
-        onChanged: (value) {
+        onChanged: (value) async {
           setState(() {
             _fontSize = value;
           });
+          await _settingsService.setFontSize(value);
         },
       ),
       trailing: Text(
@@ -137,10 +135,11 @@ class _SettingsContentState extends State<SettingsContent> {
       subtitle: Text(l10n.notificationsEnable),
       value: _notificationsEnabled,
       activeColor: Colors.amber,
-      onChanged: (value) {
+      onChanged: (value) async {
         setState(() {
           _notificationsEnabled = value;
         });
+        await _settingsService.setNotificationsEnabled(value);
       },
     );
   }
@@ -150,17 +149,21 @@ class _SettingsContentState extends State<SettingsContent> {
       title: Text(l10n.language),
       trailing: DropdownButton<String>(
         value: _selectedLanguage,
-        onChanged: (String? newValue) {
+        onChanged: (String? newValue) async {
           if (newValue != null) {
             setState(() {
               _selectedLanguage = newValue;
             });
             
-            // Zmień język aplikacji - to jest tylko symulacja, 
-            // w rzeczywistej aplikacji należałoby zaimplementować zmianę języka
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Język zmieniony na: ${_availableLanguages[newValue]}")),
-            );
+            // Zmień język aplikacji
+            widget.onLocaleChanged(newValue);
+            
+            // Pokaż komunikat o zmianie języka
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("Język zmieniony na: ${_availableLanguages[newValue]}")),
+              );
+            }
           }
         },
         items: _availableLanguages.entries.map<DropdownMenuItem<String>>((entry) {

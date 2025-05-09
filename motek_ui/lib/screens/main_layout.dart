@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:motek_ui/l10n/app_localizations.dart';
 import 'package:motek_ui/models/content_type.dart';
 import 'package:motek_ui/widgets/layout/custom_app_bar.dart';
 import 'package:motek_ui/widgets/layout/custom_drawer.dart';
@@ -13,11 +12,13 @@ import 'package:motek_ui/widgets/content/login_content.dart';
 class MainLayout extends StatefulWidget {
   final bool isDarkMode;
   final Function(bool) onThemeChanged;
+  final Function(String) onLocaleChanged;
 
   const MainLayout({
     super.key, 
     required this.isDarkMode, 
-    required this.onThemeChanged
+    required this.onThemeChanged,
+    required this.onLocaleChanged,
   });
 
   @override
@@ -64,6 +65,7 @@ class _MainLayoutState extends State<MainLayout> {
         return SettingsContent(
           isDarkMode: widget.isDarkMode,
           onThemeChanged: widget.onThemeChanged,
+          onLocaleChanged: widget.onLocaleChanged,
         );
       case ContentType.notes:
         return const NotesContent();
