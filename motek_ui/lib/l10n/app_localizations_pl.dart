@@ -95,6 +95,21 @@ class AppLocalizationsPl extends AppLocalizations {
   String get loggingIn => 'Logowanie...';
 
   @override
+  String get logs => 'Logi';
+
+  @override
+  String get refresh => 'Odśwież';
+
+  @override
+  String get copyToClipboard => 'Kopiuj do schowka';
+
+  @override
+  String get logsCopied => 'Logi skopiowane do schowka';
+
+  @override
+  String get generateTestLogs => 'Generuj testowe logi';
+
+  @override
   String get noNotes => 'Brak notatek';
 
   @override

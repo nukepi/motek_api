@@ -25,6 +25,12 @@
   
   "notifications": "Notifications",
   "notificationsEnable": "Enable or disable notifications",
+
+  "logs": "Logi",
+  "refresh": "Odśwież",
+  "copyToClipboard": "Kopiuj do schowka",
+  "logsCopied": "Logi skopiowane do schowka",
+  "generateTestLogs": "Generuj testowe logi",
   
   "language": "App Language",
   

@@ -263,6 +263,36 @@ abstract class AppLocalizations {
   /// **'Logowanie...'**
   String get loggingIn;
 
+  /// No description provided for @logs.
+  ///
+  /// In pl, this message translates to:
+  /// **'Logi'**
+  String get logs;
+
+  /// No description provided for @refresh.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odśwież'**
+  String get refresh;
+
+  /// No description provided for @copyToClipboard.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kopiuj do schowka'**
+  String get copyToClipboard;
+
+  /// No description provided for @logsCopied.
+  ///
+  /// In pl, this message translates to:
+  /// **'Logi skopiowane do schowka'**
+  String get logsCopied;
+
+  /// No description provided for @generateTestLogs.
+  ///
+  /// In pl, this message translates to:
+  /// **'Generuj testowe logi'**
+  String get generateTestLogs;
+
   /// No description provided for @noNotes.
   ///
   /// In pl, this message translates to:

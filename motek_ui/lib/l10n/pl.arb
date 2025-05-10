@@ -44,6 +44,12 @@
   "loginButton": "Zaloguj się",
   "registerPrompt": "Nie masz konta? Zarejestruj się",
   "loggingIn": "Logowanie...",
+
+  "logs": "Logi",
+  "refresh": "Odśwież",
+  "copyToClipboard": "Kopiuj do schowka",
+  "logsCopied": "Logi skopiowane do schowka",
+  "generateTestLogs": "Generuj testowe logi",
   
   "noNotes": "Brak notatek",
   "noTitle": "Notatka bez tytułu",
