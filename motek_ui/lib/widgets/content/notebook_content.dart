@@ -14,15 +14,18 @@ class _NotebookContentState extends State<NotebookContent> {
   bool _isLoading = true;
   List<Notebook> _notebooks = [];
   String? _errorMessage;
+  bool _isLoaded = false;
 
   @override
-  void initState() {
-    super.initState();
-    _loadNotebooks();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isLoaded) {
+      _loadNotebooks();
+      _isLoaded = true;
+    }
   }
 
   Future<void> _loadNotebooks() async {
-    final l10n = AppLocalizations.of(context)!;
     try {
       setState(() {
         _isLoading = true;
@@ -31,15 +34,20 @@ class _NotebookContentState extends State<NotebookContent> {
       
       final notebooks = await listNotebooks();
       
-      setState(() {
-        _notebooks = notebooks;
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _notebooks = notebooks;
+          _isLoading = false;
+        });
+      }
     } catch (e) {
-      setState(() {
-        _errorMessage = l10n.loadNotebooksError(e.toString());
-        _isLoading = false;
-      });
+      if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
+        setState(() {
+          _errorMessage = l10n.loadNotebooksError(e.toString());
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -47,7 +55,7 @@ class _NotebookContentState extends State<NotebookContent> {
     final l10n = AppLocalizations.of(context)!;
     final nameController = TextEditingController();
     
-    return showDialog(
+    final result = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(l10n.newNotebook),
@@ -60,34 +68,37 @@ class _NotebookContentState extends State<NotebookContent> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(context, false),
             child: Text(l10n.cancel),
           ),
           TextButton(
-            onPressed: () async {
-              if (nameController.text.isNotEmpty) {
-                Navigator.pop(context);
-                try {
-                  await createNotebook(name: nameController.text, parentId: null);
-                  _loadNotebooks(); // Odśwież listę
-                } catch (e) {
-                  if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(l10n.error(e.toString()))),
-                    );
-                  }
-                }
-              }
-            },
+            onPressed: () => Navigator.pop(context, true),
             child: Text(l10n.create),
           ),
         ],
       ),
     );
+
+    if (result == true && nameController.text.isNotEmpty && mounted) {
+      try {
+        await createNotebook(name: nameController.text, parentId: null);
+        if (mounted) {
+          _loadNotebooks(); // Odśwież listę
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.error(e.toString()))),
+          );
+        }
+      }
+    }
   }
 
   Future<void> _deleteNotebook(Notebook notebook) async {
+    // Zapisz l10n przed operacją asynchroniczną
     final l10n = AppLocalizations.of(context)!;
+    
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -106,17 +117,17 @@ class _NotebookContentState extends State<NotebookContent> {
       ),
     ) ?? false;
 
-    if (confirmed) {
+    if (confirmed && mounted) {
       try {
         final success = await deleteNotebook(notebookId: notebook.id);
+        if (!mounted) return;
+        
         if (success) {
           _loadNotebooks(); // Odśwież listę
         } else {
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(l10n.notebookDeleteError)),
-            );
-          }
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.notebookDeleteError)),
+          );
         }
       } catch (e) {
         if (mounted) {
@@ -129,10 +140,11 @@ class _NotebookContentState extends State<NotebookContent> {
   }
 
   Future<void> _editNotebook(Notebook notebook) async {
+    // Zapisz l10n przed operacją asynchroniczną
     final l10n = AppLocalizations.of(context)!;
     final nameController = TextEditingController(text: notebook.name);
     
-    return showDialog(
+    final result = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(l10n.editNotebook),
@@ -145,34 +157,35 @@ class _NotebookContentState extends State<NotebookContent> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(context, false),
             child: Text(l10n.cancel),
           ),
           TextButton(
-            onPressed: () async {
-              if (nameController.text.isNotEmpty) {
-                Navigator.pop(context);
-                try {
-                  await updateNotebook(
-                    notebookId: notebook.id, 
-                    name: nameController.text,
-                    parentId: null
-                  );
-                  _loadNotebooks(); // Odśwież listę
-                } catch (e) {
-                  if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(l10n.error(e.toString()))),
-                    );
-                  }
-                }
-              }
-            },
+            onPressed: () => Navigator.pop(context, true),
             child: Text(l10n.save),
           ),
         ],
       ),
     );
+
+    if (result == true && nameController.text.isNotEmpty && mounted) {
+      try {
+        await updateNotebook(
+          notebookId: notebook.id, 
+          name: nameController.text,
+          parentId: null
+        );
+        if (mounted) {
+          _loadNotebooks(); // Odśwież listę
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.error(e.toString()))),
+          );
+        }
+      }
+    }
   }
 
   @override

@@ -14,6 +14,9 @@ import '../api_handlers/user_settings.dart';
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
+// These functions are ignored because they are not marked as `pub`: `setup_logging`, `setup_multi_logging`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `fmt`
+
 Future<AuthResponse> login({required String email, required String password}) =>
     RustLib.instance.api.crateApiEndpointLogin(
       email: email,
@@ -257,3 +260,80 @@ Future<bool> deleteUserSettings({required String settingsId}) => RustLib
     .instance
     .api
     .crateApiEndpointDeleteUserSettings(settingsId: settingsId);
+
+Future<bool> refreshTokens() =>
+    RustLib.instance.api.crateApiEndpointRefreshTokens();
+
+Future<void> configureLogging({
+  required String logDir,
+  required String logFilePrefix,
+}) => RustLib.instance.api.crateApiEndpointConfigureLogging(
+  logDir: logDir,
+  logFilePrefix: logFilePrefix,
+);
+
+Future<CheckApiResult> checkApiConnection() =>
+    RustLib.instance.api.crateApiEndpointCheckApiConnection();
+
+Future<String> getLogs({String? logFilePath}) =>
+    RustLib.instance.api.crateApiEndpointGetLogs(logFilePath: logFilePath);
+
+Future<bool> setApiUrl({required String url}) =>
+    RustLib.instance.api.crateApiEndpointSetApiUrl(url: url);
+
+Future<String> getApiUrl() => RustLib.instance.api.crateApiEndpointGetApiUrl();
+
+Future<void> testRustLogging() =>
+    RustLib.instance.api.crateApiEndpointTestRustLogging();
+
+Future<void> setFlutterLogCallback({
+  required FnLevelStringMessageString callback,
+}) => RustLib.instance.api.crateApiEndpointSetFlutterLogCallback(
+  callback: callback,
+);
+
+Future<void> setupLoggingBridge({
+  required String logLevel,
+  String? logFilePath,
+}) => RustLib.instance.api.crateApiEndpointSetupLoggingBridge(
+  logLevel: logLevel,
+  logFilePath: logFilePath,
+);
+
+Future<bool> isUserLoggedIn() =>
+    RustLib.instance.api.crateApiEndpointIsUserLoggedIn();
+
+Future<String?> getLoggedInEmail() =>
+    RustLib.instance.api.crateApiEndpointGetLoggedInEmail();
+
+Future<String?> getLoggedInUserId() =>
+    RustLib.instance.api.crateApiEndpointGetLoggedInUserId();
+
+Future<bool> logoutUser() => RustLib.instance.api.crateApiEndpointLogoutUser();
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<fn (level : String , message : String)>>
+abstract class FnLevelStringMessageString implements RustOpaqueInterface {}
+
+class CheckApiResult {
+  final bool success;
+  final int statusCode;
+  final String message;
+
+  const CheckApiResult({
+    required this.success,
+    required this.statusCode,
+    required this.message,
+  });
+
+  @override
+  int get hashCode => success.hashCode ^ statusCode.hashCode ^ message.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CheckApiResult &&
+          runtimeType == other.runtimeType &&
+          success == other.success &&
+          statusCode == other.statusCode &&
+          message == other.message;
+}

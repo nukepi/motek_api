@@ -8,6 +8,7 @@ import 'package:motek_ui/widgets/content/settings_content.dart';
 import 'package:motek_ui/widgets/content/notes_content.dart';
 import 'package:motek_ui/widgets/content/notebook_content.dart';
 import 'package:motek_ui/widgets/content/login_content.dart';
+import 'package:motek_ui/widgets/content/logs_content.dart';
 
 class MainLayout extends StatefulWidget {
   final bool isDarkMode;
@@ -57,22 +58,27 @@ class _MainLayoutState extends State<MainLayout> {
   }
 
   // Metoda budująca aktualną zawartość
-  Widget _buildCurrentContent() {
-    switch (_currentContent) {
-      case ContentType.home:
-        return const HomeContent();
-      case ContentType.settings:
-        return SettingsContent(
-          isDarkMode: widget.isDarkMode,
-          onThemeChanged: widget.onThemeChanged,
-          onLocaleChanged: widget.onLocaleChanged,
-        );
-      case ContentType.notes:
-        return const NotesContent();
-      case ContentType.notebooks:
-        return const NotebookContent();
-      case ContentType.login:
-        return const LoginContent();
-    }
+Widget _buildCurrentContent() {
+  switch (_currentContent) {
+    case ContentType.home:
+      return const HomeContent();
+    case ContentType.settings:
+      return SettingsContent(
+        isDarkMode: widget.isDarkMode,
+        onThemeChanged: widget.onThemeChanged,
+        onLocaleChanged: widget.onLocaleChanged,
+      );
+    case ContentType.notes:
+      return const NotesContent();
+    case ContentType.notebooks:
+      return const NotebookContent();
+    case ContentType.login:
+      return const LoginContent();
+    case ContentType.register:
+      // RegisterContent jest teraz obsługiwany przez LoginContent
+      return const LoginContent();
+    case ContentType.logs:
+      return const LogsContent();
   }
+}
 }

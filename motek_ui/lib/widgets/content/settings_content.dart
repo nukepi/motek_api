@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:motek_ui/l10n/app_localizations.dart';
 import 'package:motek_ui/services/settings_service.dart';
+import 'package:motek_ui/services/auth_service.dart';
+import 'package:provider/provider.dart';
+import 'package:motek_ui/screens/main_layout.dart';
+import 'package:motek_ui/models/content_type.dart';
 
 class SettingsContent extends StatefulWidget {
   final bool isDarkMode;
@@ -28,6 +32,7 @@ class _SettingsContentState extends State<SettingsContent> {
   final Map<String, String> _availableLanguages = {
     'pl': 'Polski',
     'en': 'English',
+    'es': 'Español',
   };
 
   @override
@@ -177,30 +182,81 @@ class _SettingsContentState extends State<SettingsContent> {
   }
 
   Widget _buildAccountButtons(AppLocalizations l10n) {
-    return Column(
-      children: [
-        ListTile(
-          leading: const Icon(Icons.person),
-          title: Text(l10n.editProfile),
-          onTap: () {
-            // Tutaj można dodać logikę edycji profilu
-          },
-        ),
-        ListTile(
-          leading: const Icon(Icons.security),
-          title: Text(l10n.changePassword),
-          onTap: () {
-            // Tutaj można dodać logikę zmiany hasła
-          },
-        ),
-        ListTile(
-          leading: const Icon(Icons.logout, color: Colors.red),
-          title: Text(l10n.logout, style: const TextStyle(color: Colors.red)),
-          onTap: () {
-            // Tutaj można dodać logikę wylogowania
-          },
-        ),
-      ],
+    return Consumer<AuthService>(
+      builder: (context, authService, _) {
+        if (!authService.isLoggedIn) {
+          return ListTile(
+            leading: const Icon(Icons.login),
+            title: Text(l10n.login),
+            onTap: () {
+              // Przejdź do ekranu logowania
+              final mainLayout = context.findAncestorStateOfType<State<MainLayout>>();
+              if (mainLayout != null) {
+                final mainLayoutState = mainLayout as dynamic;
+                mainLayoutState.changeContent(ContentType.login);
+              }
+            },
+          );
+        }
+        
+        return Column(
+          children: [
+            if (authService.userEmail != null)
+              ListTile(
+                leading: const Icon(Icons.person),
+                title: Text(authService.userEmail!),
+                subtitle: Text('Zalogowano jako'), // Dodaj to tłumaczenie
+              ),
+            ListTile(
+              leading: const Icon(Icons.person),
+              title: Text(l10n.editProfile),
+              onTap: () {
+                // Tutaj można dodać logikę edycji profilu
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.security),
+              title: Text(l10n.changePassword),
+              onTap: () {
+                // Tutaj można dodać logikę zmiany hasła
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.logout, color: Colors.red),
+              title: Text(l10n.logout, style: const TextStyle(color: Colors.red)),
+              onTap: () async {
+                final shouldLogout = await showDialog<bool>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: Text(l10n.logout),
+                    content: Text('Czy na pewno chcesz się wylogować?'), // Dodaj to tłumaczenie
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, false),
+                        child: Text(l10n.cancel),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, true),
+                        child: Text(l10n.logout),
+                      ),
+                    ],
+                  ),
+                );
+
+                if (shouldLogout == true) {
+                  await authService.logout();
+                  
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Wylogowano pomyślnie')), // Dodaj to tłumaczenie
+                    );
+                  }
+                }
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 

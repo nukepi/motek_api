@@ -9,7 +9,7 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 class Note {
   final String id;
   final String userId;
-  final String notebookId;
+  final String? notebookId;
   final String title;
   final String content;
   final bool isArchived;
@@ -21,7 +21,7 @@ class Note {
   const Note({
     required this.id,
     required this.userId,
-    required this.notebookId,
+    this.notebookId,
     required this.title,
     required this.content,
     required this.isArchived,

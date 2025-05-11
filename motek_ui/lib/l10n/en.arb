@@ -1,5 +1,6 @@
 {
   "@@locale": "en",
+  
   "appTitle": "Motek UI",
   "version": "Version {version}",
   "@version": {
@@ -11,81 +12,10 @@
       }
     }
   },
-
-  "home": "Home",
-  "settings": "Settings",
-  "notes": "Notes",
-  "notebooks": "Notebooks",
-  "login": "Login",
-
-  "appearance": "Appearance",
-  "darkMode": "Dark Mode",
-  "darkModeDescription": "Change app appearance to dark",
-  "fontSize": "Font Size",
-  
-  "notifications": "Notifications",
-  "notificationsEnable": "Enable or disable notifications",
-
-  "logs": "Logi",
-  "refresh": "Odśwież",
-  "copyToClipboard": "Kopiuj do schowka",
-  "logsCopied": "Logi skopiowane do schowka",
-  "generateTestLogs": "Generuj testowe logi",
-  
-  "language": "App Language",
-  
-  "account": "Account",
-  "editProfile": "Edit Profile",
-  "changePassword": "Change Password",
-  "logout": "Log out",
-  
-  "aboutApp": "About App",
-  "license": "License",
   "copyright": "© 2025 Motek UI",
   
-  "email": "Email",
-  "password": "Password",
-  "pleaseEnterEmail": "Please enter your email",
-  "pleaseEnterPassword": "Please enter your password",
-  "loginButton": "Log in",
-  "registerPrompt": "Don't have an account? Register",
-  "loggingIn": "Logging in...",
+  "noDescription": "No description",
   
-  "noNotes": "No notes",
-  "noTitle": "Untitled Note",
-  "noContent": "No content",
-  "dateUnknown": "Date unknown",
-  "newNote": "New Note",
-  "title": "Title",
-  "content": "Content",
-  "cancel": "Cancel",
-  "create": "Create",
-  "edit": "Edit Note",
-  "save": "Save",
-  "confirmDelete": "Confirm Delete",
-  "confirmDeleteNote": "Are you sure you want to delete note \"{title}\"?",
-  "@confirmDeleteNote": {
-    "description": "Confirmation for note deletion",
-    "placeholders": {
-      "title": {
-        "type": "String",
-        "example": "My note"
-      }
-    }
-  },
-  "delete": "Delete",
-  "noteDeleted": "Deleted note: {title}",
-  "@noteDeleted": {
-    "description": "Message after note deletion",
-    "placeholders": {
-      "title": {
-        "type": "String",
-        "example": "My note"
-      }
-    }
-  },
-  "undoAction": "Undo",
-  "deleteError": "Failed to delete note",
   "error": "Error: {message}",
   "@error": {
     "description": "Error message",
@@ -98,6 +28,135 @@
   },
   "tryAgain": "Try again",
   
+  "created": "Created: {date}",
+  "@created": {
+    "description": "Creation date",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "01/01/2025"
+      }
+    }
+  },
+  
+  "cancel": "Cancel",
+  "save": "Save",
+  "delete": "Delete",
+  "create": "Create",
+  "edit": "Edit Note",
+  "undoAction": "Undo",
+  
+  "confirmDelete": "Confirm Delete",
+  
+  "navigationLabels": "--- Navigation Labels ---",
+  "home": "Home",
+  "settings": "Settings",
+  "notes": "Notes",
+  "notebooks": "Notebooks",
+  "login": "Login",
+  
+  "authenticationLabels": "--- Authentication Labels ---",
+  "loggedInAs": "Logged in as",
+  "confirmLogout": "Are you sure you want to log out?",
+  "logoutSuccess": "Successfully logged out",
+  "email": "Email",
+  "password": "Password",
+  "pleaseEnterEmail": "Please enter your email",
+  "pleaseEnterPassword": "Please enter your password",
+  "loginButton": "Log in",
+  "registerPrompt": "Don't have an account? Register",
+  "loggingIn": "Logging in...",
+  "logout": "Log out",
+  
+  "settingsLabels": "--- Settings Labels ---",
+  "appearance": "Appearance",
+  "darkMode": "Dark Mode",
+  "darkModeDescription": "Change app appearance to dark",
+  "fontSize": "Font Size",
+  "notifications": "Notifications",
+  "notificationsEnable": "Enable or disable notifications",
+  "language": "App Language",
+  "account": "Account",
+  "editProfile": "Edit Profile",
+  "changePassword": "Change Password",
+  "aboutApp": "About App",
+  "license": "License",
+  
+  "logsLabels": "--- Logs Labels ---",
+  "logs": "Logs",
+  "refresh": "Refresh",
+  "copyToClipboard": "Copy to clipboard",
+  "logsCopied": "Logs copied to clipboard",
+  "generateTestLogs": "Generate test logs",
+
+  "register": "Register",
+  "confirmPassword": "Confirm password",
+  "passwordMismatch": "Passwords do not match",
+  "passwordTooShort": "Password must be at least 6 characters long",
+  "registrationSuccess": "Registration successful! You can now log in.",
+  "invalidEmail": "Please enter a valid email address",
+  "welcomeMessage": "Welcome to Motek UI!",
+  "testLogs": "Test logs",
+  "testLogSaved": "Test log saved to console",
+  "loginRequired": "You must be logged in to view notes",
+  "settingsSaved": "Settings saved",
+  "logFilePath": "Log file path:",
+  "logLevel": "Log level:",
+  "loggingSettings": "Logging settings",
+
+  "notLoggedIn": "Not logged in",
+  
+  "notesLabels": "--- Notes Labels ---",
+  "saveNote": "Save Note",
+  "editingNote": "Editing Note",
+  "formatText": "Format Text",
+  "boldText": "Bold",
+  "italicText": "Italic",
+  "underlineText": "Underline",
+  "bulletList": "Bullet List",
+  "numberList": "Numbered List",
+  "insertImage": "Insert Image",
+  "noNotes": "No notes",
+  "noTitle": "Untitled Note",
+  "noContent": "No content",
+  "dateUnknown": "Date unknown",
+  "newNote": "New Note",
+  "editNote": "Edit Note",
+  "title": "Title",
+  "content": "Content",
+  "confirmDeleteNote": "Are you sure you want to delete note \"{title}\"?",
+  "@confirmDeleteNote": {
+    "description": "Confirmation for note deletion",
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "example": "My note"
+      }
+    }
+  },
+  "noteDeleted": "Deleted note: {title}",
+  "@noteDeleted": {
+    "description": "Message after note deletion",
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "example": "My note"
+      }
+    }
+  },
+  "deleteError": "Failed to delete note",
+  "loadNotesError": "Failed to load notes: {message}",
+  "@loadNotesError": {
+    "description": "Error loading notes",
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "Connection error"
+      }
+    }
+  },
+  
+  "notebooksLabels": "--- Notebooks Labels ---",
   "noNotebooks": "No notebooks",
   "newNotebook": "New Notebook",
   "notebookName": "Notebook name",
@@ -123,28 +182,6 @@
       }
     }
   },
-  "created": "Created: {date}",
-  "@created": {
-    "description": "Creation date",
-    "placeholders": {
-      "date": {
-        "type": "String",
-        "example": "01/01/2025"
-      }
-    }
-  },
-  
-  "loadNotesError": "Failed to load notes: {message}",
-  "@loadNotesError": {
-    "description": "Error loading notes",
-    "placeholders": {
-      "message": {
-        "type": "String",
-        "example": "Connection error"
-      }
-    }
-  },
-  
   "loadNotebooksError": "Failed to load notebooks: {message}",
   "@loadNotebooksError": {
     "description": "Error loading notebooks",
@@ -154,5 +191,64 @@
         "example": "Connection error"
       }
     }
-  }
+  },
+  "notebookDeleted": "Notebook deleted: {name}",
+  "@notebookDeleted": {
+    "description": "Message shown after a notebook is deleted",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "My notebook"
+      }
+    }
+  },
+  "deleteNote": "Delete note",
+  "notes": "Notes",
+  "noNotes": "No notes yet. Create your first note!",
+  "loadNotesError": "Failed to load notes: {error}",
+  "@loadNotesError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "deleteNoteConfirmTitle": "Delete Note",
+  "deleteNoteConfirmMessage": "Are you sure you want to delete note \"{title}\"?",
+  "@deleteNoteConfirmMessage": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "delete": "Delete",
+  "cancel": "Cancel",
+  "noteDeleted": "Note deleted successfully",
+  "deleteNoteFailed": "Failed to delete note",
+  "error": "Error: {message}",
+  "@error": {
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "tryAgain": "Try Again",
+  "refresh": "Refresh",
+  "loginRequired": "You need to be logged in to view notes",
+  "login": "Login",
+  "sessionExpired": "Your session has expired. Please log in again.",
+  "noteCount": "{count, plural, one{# note} other{# notes}}",
+  "@noteCount": {
+    "description": "Number of notes",
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "noTags": "No tags found",
+  "@noTags": {
+    "description": "Displayed when there are no tags"
+  },
+  "unsavedChanges": "You have unsaved changes.",
+  "discardChanges": "Do you want to discard your changes?",
+  "discard": "Discard",
+  "noteTitle": "Note title",
+  "startTyping": "Start typing...",
+  "notebook": "Notebook",
+  "noNotebook": "No notebook"
 }

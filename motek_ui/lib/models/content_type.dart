@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:motek_ui/l10n/app_localizations.dart';
 
-enum ContentType { home, settings, notes, notebooks, login }
+enum ContentType { home, settings, notes, notebooks, login, register, logs }
 
 /// Rozszerzenie dla ContentType dodające pomocnicze metody
 extension ContentTypeExtension on ContentType {
@@ -18,6 +18,10 @@ extension ContentTypeExtension on ContentType {
         return l10n.notebooks;
       case ContentType.login:
         return l10n.login;
+      case ContentType.register:
+        return 'Rejestracja';
+      case ContentType.logs:
+        return 'Logi  '; // Można dodać tłumaczenie
     }
   }
 
@@ -33,6 +37,10 @@ extension ContentTypeExtension on ContentType {
         return Icons.book;
       case ContentType.login:
         return Icons.login;
+      case ContentType.register:
+        return Icons.person_add;
+      case ContentType.logs:
+        return Icons.description;
     }
   }
 }

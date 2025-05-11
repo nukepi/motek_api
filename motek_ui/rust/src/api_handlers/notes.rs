@@ -1,11 +1,12 @@
-use serde::{Serialize, Deserialize};
+use serde::{Serialize, Deserialize, Deserializer};
+use chrono::{DateTime, Utc};
 use crate::utils::helpers::{authorized_get, authorized_post, authorized_put, authorized_delete};
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Debug, Clone)]
 pub struct Note {
     pub id: String,
     pub user_id: String,
-    pub notebook_id: String,
+    pub notebook_id: Option<String>,  // Zmiana z String na Option<String>
     pub title: String,
     pub content: String,
     pub is_archived: bool,
@@ -13,6 +14,65 @@ pub struct Note {
     pub tags: String,
     pub created_at: i64,
     pub updated_at: i64,
+}
+
+// Implementacja własnej deserializacji
+impl<'de> Deserialize<'de> for Note {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        #[derive(Deserialize)]
+        struct NoteHelper {
+            id: String,
+            user_id: String,
+            notebook_id: Option<String>,  // Obsługa null
+            title: String,
+            content: String,
+            is_archived: bool,
+            is_pinned: bool,
+            tags: serde_json::Value,  // Obsługa różnych formatów tagów
+            created_at: String,       // Daty jako String
+            updated_at: String,       // Daty jako String
+        }
+
+        let helper = NoteHelper::deserialize(deserializer)?;
+        
+        // Konwersja tagów
+        let tags = match helper.tags {
+            serde_json::Value::Array(arr) => {
+                // Jeśli to tablica, połącz elementy przecinkami
+                arr.iter()
+                   .map(|v| v.as_str().unwrap_or("").to_string())
+                   .collect::<Vec<_>>()
+                   .join(",")
+            },
+            serde_json::Value::String(s) => s,
+            _ => String::new(),
+        };
+        
+        // Konwersja dat
+        let created_at = DateTime::parse_from_rfc3339(&helper.created_at)
+            .map_err(serde::de::Error::custom)?
+            .timestamp_millis();
+            
+        let updated_at = DateTime::parse_from_rfc3339(&helper.updated_at)
+            .map_err(serde::de::Error::custom)?
+            .timestamp_millis();
+
+        Ok(Note {
+            id: helper.id,
+            user_id: helper.user_id,
+            notebook_id: helper.notebook_id,
+            title: helper.title,
+            content: helper.content,
+            is_archived: helper.is_archived,
+            is_pinned: helper.is_pinned,
+            tags,
+            created_at,
+            updated_at,
+        })
+    }
 }
 
 /// Fetches the list of all notes for the current user.
@@ -31,6 +91,7 @@ pub async fn create_note(title: String, content: String) -> Option<Note> {
     let payload = serde_json::json!({
         "title": title,
         "content": content,
+        "tags": [] ,
     });
     authorized_post("/api/notes", payload).await
 }

@@ -1,5 +1,6 @@
 {
   "@@locale": "pl",
+  
   "appTitle": "Motek UI",
   "version": "Wersja {version}",
   "@version": {
@@ -11,81 +12,10 @@
       }
     }
   },
-
-  "home": "Strona główna",
-  "settings": "Ustawienia",
-  "notes": "Notatki",
-  "notebooks": "Notatniki",
-  "login": "Logowanie",
-
-  "appearance": "Wygląd",
-  "darkMode": "Tryb ciemny",
-  "darkModeDescription": "Zmień wygląd aplikacji na ciemny",
-  "fontSize": "Rozmiar czcionki",
-  
-  "notifications": "Powiadomienia",
-  "notificationsEnable": "Włącz lub wyłącz powiadomienia",
-  
-  "language": "Język aplikacji",
-  
-  "account": "Konto",
-  "editProfile": "Edytuj profil",
-  "changePassword": "Zmień hasło",
-  "logout": "Wyloguj się",
-  
-  "aboutApp": "O aplikacji",
-  "license": "Licencja",
   "copyright": "© 2025 Motek UI",
   
-  "email": "Email",
-  "password": "Hasło",
-  "pleaseEnterEmail": "Proszę podać email",
-  "pleaseEnterPassword": "Proszę podać hasło",
-  "loginButton": "Zaloguj się",
-  "registerPrompt": "Nie masz konta? Zarejestruj się",
-  "loggingIn": "Logowanie...",
-
-  "logs": "Logi",
-  "refresh": "Odśwież",
-  "copyToClipboard": "Kopiuj do schowka",
-  "logsCopied": "Logi skopiowane do schowka",
-  "generateTestLogs": "Generuj testowe logi",
+  "noDescription": "Brak opisu",
   
-  "noNotes": "Brak notatek",
-  "noTitle": "Notatka bez tytułu",
-  "noContent": "Brak treści",
-  "dateUnknown": "Data nieznana",
-  "newNote": "Nowa notatka",
-  "title": "Tytuł",
-  "content": "Treść",
-  "cancel": "Anuluj",
-  "create": "Utwórz",
-  "edit": "Edytuj notatkę",
-  "save": "Zapisz",
-  "confirmDelete": "Potwierdź usunięcie",
-  "confirmDeleteNote": "Czy na pewno chcesz usunąć notatkę \"{title}\"?",
-  "@confirmDeleteNote": {
-    "description": "Potwierdzenie usunięcia notatki",
-    "placeholders": {
-      "title": {
-        "type": "String",
-        "example": "Moja notatka"
-      }
-    }
-  },
-  "delete": "Usuń",
-  "noteDeleted": "Usunięto notatkę: {title}",
-  "@noteDeleted": {
-    "description": "Komunikat po usunięciu notatki",
-    "placeholders": {
-      "title": {
-        "type": "String",
-        "example": "Moja notatka"
-      }
-    }
-  },
-  "undoAction": "Cofnij",
-  "deleteError": "Nie udało się usunąć notatki",
   "error": "Błąd: {message}",
   "@error": {
     "description": "Komunikat błędu",
@@ -98,6 +28,135 @@
   },
   "tryAgain": "Spróbuj ponownie",
   
+  "created": "Utworzono: {date}",
+  "@created": {
+    "description": "Data utworzenia",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "01.01.2025"
+      }
+    }
+  },
+  
+  "cancel": "Anuluj",
+  "save": "Zapisz",
+  "delete": "Usuń",
+  "create": "Utwórz",
+  "edit": "Edytuj notatkę",
+  "undoAction": "Cofnij",
+  
+  "confirmDelete": "Potwierdź usunięcie",
+  
+  "navigationLabels": "--- Etykiety nawigacji ---",
+  "home": "Strona główna",
+  "settings": "Ustawienia",
+  "notes": "Notatki",
+  "notebooks": "Notatniki",
+  "login": "Logowanie",
+  
+  "authenticationLabels": "--- Etykiety uwierzytelniania ---",
+  "loggedInAs": "Zalogowano jako",
+  "confirmLogout": "Czy na pewno chcesz się wylogować?",
+  "logoutSuccess": "Wylogowano pomyślnie",
+  "email": "Email",
+  "password": "Hasło",
+  "pleaseEnterEmail": "Proszę podać email",
+  "pleaseEnterPassword": "Proszę podać hasło",
+  "loginButton": "Zaloguj się",
+  "registerPrompt": "Nie masz konta? Zarejestruj się",
+  "loggingIn": "Logowanie...",
+  "logout": "Wyloguj się",
+  
+  "settingsLabels": "--- Etykiety ustawień ---",
+  "appearance": "Wygląd",
+  "darkMode": "Tryb ciemny",
+  "darkModeDescription": "Zmień wygląd aplikacji na ciemny",
+  "fontSize": "Rozmiar czcionki",
+  "notifications": "Powiadomienia",
+  "notificationsEnable": "Włącz lub wyłącz powiadomienia",
+  "language": "Język aplikacji",
+  "account": "Konto",
+  "editProfile": "Edytuj profil",
+  "changePassword": "Zmień hasło",
+  "aboutApp": "O aplikacji",
+  "license": "Licencja",
+  
+  "logsLabels": "--- Etykiety logów ---",
+  "logs": "Logi",
+  "refresh": "Odśwież",
+  "copyToClipboard": "Kopiuj do schowka",
+  "logsCopied": "Logi skopiowane do schowka",
+  "generateTestLogs": "Generuj testowe logi",
+
+  "register": "Rejestracja",
+  "confirmPassword": "Potwierdź hasło",
+  "passwordMismatch": "Hasła nie są identyczne",
+  "passwordTooShort": "Hasło musi mieć co najmniej 6 znaków",
+  "registrationSuccess": "Rejestracja udana! Możesz się teraz zalogować.",
+  "invalidEmail": "Proszę podać poprawny adres email",
+  "welcomeMessage": "Witaj w aplikacji Motek UI!",
+  "testLogs": "Testuj logi",
+  "testLogSaved": "Test log zapisany w konsoli",
+  "loginRequired": "Musisz być zalogowany, aby zobaczyć notatki",
+  "settingsSaved": "Ustawienia zapisane",
+  "logFilePath": "Ścieżka do pliku logów:",
+  "logLevel": "Poziom logowania:",
+  "loggingSettings": "Ustawienia logowania",
+
+  "notLoggedIn": "Niezalogowany",
+  
+  "notesLabels": "--- Etykiety notatek ---",
+  "saveNote": "Zapisz notatkę",
+  "editingNote": "Edycja notatki",
+  "formatText": "Formatuj tekst",
+  "boldText": "Pogrubienie",
+  "italicText": "Kursywa",
+  "underlineText": "Podkreślenie",
+  "bulletList": "Lista punktowana",
+  "numberList": "Lista numerowana",
+  "insertImage": "Wstaw obraz",
+  "noNotes": "Brak notatek",
+  "noTitle": "Notatka bez tytułu",
+  "noContent": "Brak treści",
+  "dateUnknown": "Data nieznana",
+  "newNote": "Nowa notatka",
+  "editNote": "Edytuj notatkę",
+  "title": "Tytuł",
+  "content": "Treść",
+  "confirmDeleteNote": "Czy na pewno chcesz usunąć notatkę \"{title}\"?",
+  "@confirmDeleteNote": {
+    "description": "Potwierdzenie usunięcia notatki",
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "example": "Moja notatka"
+      }
+    }
+  },
+  "noteDeleted": "Notatka skasowana: {title}",
+  "@noteDeleted": {
+    "description": "Komunikat po usunięciu notatki",
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "example": "Moja notatka"
+      }
+    }
+  },
+  "deleteError": "Nie udało się usunąć notatki",
+  "loadNotesError": "Nie udało się załadować notatek: {message}",
+  "@loadNotesError": {
+    "description": "Błąd ładowania notatek",
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "Błąd połączenia"
+      }
+    }
+  },
+  
+  "notebooksLabels": "--- Etykiety notatników ---",
   "noNotebooks": "Brak notatników",
   "newNotebook": "Nowy notatnik",
   "notebookName": "Nazwa notatnika",
@@ -123,28 +182,6 @@
       }
     }
   },
-  "created": "Utworzono: {date}",
-  "@created": {
-    "description": "Data utworzenia",
-    "placeholders": {
-      "date": {
-        "type": "String",
-        "example": "01.01.2025"
-      }
-    }
-  },
-  
-  "loadNotesError": "Nie udało się załadować notatek: {message}",
-  "@loadNotesError": {
-    "description": "Błąd ładowania notatek",
-    "placeholders": {
-      "message": {
-        "type": "String",
-        "example": "Błąd połączenia"
-      }
-    }
-  },
-  
   "loadNotebooksError": "Nie udało się załadować notatników: {message}",
   "@loadNotebooksError": {
     "description": "Błąd ładowania notatników",
@@ -154,5 +191,67 @@
         "example": "Błąd połączenia"
       }
     }
-  }
+  },
+  "notebookDeleted": "Usunięto notatnik: {name}",
+  "@notebookDeleted": {
+    "description": "Komunikat wyświetlany po usunięciu notatnika",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Mój notatnik"
+      }
+    }
+  },
+  "untitledNote": "Notatka bez tytułu",
+  "retry": "Spróbuj ponownie",
+  "deleteNote": "Usuń notatkę",
+
+    "notes": "Notatki",
+  "noNotes": "Brak notatek. Utwórz swoją pierwszą notatkę!",
+  "loadNotesError": "Nie udało się załadować notatek: {error}",
+  "@loadNotesError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "deleteNoteConfirmTitle": "Usuń notatkę",
+  "deleteNoteConfirmMessage": "Czy na pewno chcesz usunąć notatkę \"{title}\"?",
+  "@deleteNoteConfirmMessage": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "delete": "Usuń",
+  "cancel": "Anuluj",
+  "noteDeleted": "Notatka została pomyślnie usunięta",
+  "deleteNoteFailed": "Nie udało się usunąć notatki",
+  "error": "Błąd: {message}",
+  "@error": {
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "tryAgain": "Spróbuj ponownie",
+  "refresh": "Odśwież",
+  "loginRequired": "Musisz być zalogowany, aby przeglądać notatki",
+  "login": "Zaloguj się",
+  "sessionExpired": "Twoja sesja wygasła. Zaloguj się ponownie.",
+  "noteCount": "{count, plural, one{# notatka} few{# notatki} many{# notatek} other{# notatek}}",
+  "@noteCount": {
+    "description": "Liczba notatek",
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "noTags": "Brak tagów",
+"@noTags": {
+  "description": "Wyświetlane, gdy nie ma żadnych tagów"
+},
+  "unsavedChanges": "Masz niezapisane zmiany.",
+  "discardChanges": "Czy chcesz porzucić zmiany?",
+  "discard": "Porzuć",
+  "noteTitle": "Tytuł notatki",
+  "startTyping": "Zacznij pisać...",
+  "notebook": "Notatnik",
+  "noNotebook": "Brak notatnika"
 }

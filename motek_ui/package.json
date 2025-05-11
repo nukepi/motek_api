@@ -1,0 +1,22 @@
+{
+  "name": "motek_ui",
+  "version": "1.0.0",
+  "description": "Motek UI - Flutter and Rust",
+  "type": "module",
+  "scripts": {
+    "clean": "node scripts/clean.js",
+    "run": "node scripts/run.js",
+    "generate": "node scripts/generate.js",
+    "build": "node scripts/build.js",
+    "setup": "node scripts/setup.js",
+    "dev": "node scripts/dev.js"
+  },
+  "keywords": ["flutter", "rust", "motek"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "cross-spawn": "^7.0.3",
+    "ora": "^7.0.1"
+  }
+}

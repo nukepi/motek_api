@@ -10,7 +10,7 @@ class Notebook {
   final String id;
   final String userId;
   final String name;
-  final String parentId;
+  final String? parentId;
   final PlatformInt64 createdAt;
   final PlatformInt64 updatedAt;
 
@@ -18,7 +18,7 @@ class Notebook {
     required this.id,
     required this.userId,
     required this.name,
-    required this.parentId,
+    this.parentId,
     required this.createdAt,
     required this.updatedAt,
   });

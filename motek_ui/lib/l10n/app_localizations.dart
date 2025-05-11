@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_en.dart';
+import 'app_localizations_es.dart';
 import 'app_localizations_pl.dart';
 
 // ignore_for_file: type=lint
@@ -92,6 +93,7 @@ abstract class AppLocalizations {
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
+    Locale('es'),
     Locale('pl')
   ];
 
@@ -106,6 +108,84 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Wersja {version}'**
   String version(String version);
+
+  /// No description provided for @copyright.
+  ///
+  /// In pl, this message translates to:
+  /// **'© 2025 Motek UI'**
+  String get copyright;
+
+  /// No description provided for @noDescription.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak opisu'**
+  String get noDescription;
+
+  /// No description provided for @error.
+  ///
+  /// In pl, this message translates to:
+  /// **'Błąd: {message}'**
+  String error(Object message);
+
+  /// No description provided for @tryAgain.
+  ///
+  /// In pl, this message translates to:
+  /// **'Spróbuj ponownie'**
+  String get tryAgain;
+
+  /// Data utworzenia
+  ///
+  /// In pl, this message translates to:
+  /// **'Utworzono: {date}'**
+  String created(String date);
+
+  /// No description provided for @cancel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Anuluj'**
+  String get cancel;
+
+  /// No description provided for @save.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapisz'**
+  String get save;
+
+  /// No description provided for @delete.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usuń'**
+  String get delete;
+
+  /// No description provided for @create.
+  ///
+  /// In pl, this message translates to:
+  /// **'Utwórz'**
+  String get create;
+
+  /// No description provided for @edit.
+  ///
+  /// In pl, this message translates to:
+  /// **'Edytuj notatkę'**
+  String get edit;
+
+  /// No description provided for @undoAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Cofnij'**
+  String get undoAction;
+
+  /// No description provided for @confirmDelete.
+  ///
+  /// In pl, this message translates to:
+  /// **'Potwierdź usunięcie'**
+  String get confirmDelete;
+
+  /// No description provided for @navigationLabels.
+  ///
+  /// In pl, this message translates to:
+  /// **'--- Etykiety nawigacji ---'**
+  String get navigationLabels;
 
   /// No description provided for @home.
   ///
@@ -134,8 +214,86 @@ abstract class AppLocalizations {
   /// No description provided for @login.
   ///
   /// In pl, this message translates to:
-  /// **'Logowanie'**
+  /// **'Zaloguj się'**
   String get login;
+
+  /// No description provided for @authenticationLabels.
+  ///
+  /// In pl, this message translates to:
+  /// **'--- Etykiety uwierzytelniania ---'**
+  String get authenticationLabels;
+
+  /// No description provided for @loggedInAs.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zalogowano jako'**
+  String get loggedInAs;
+
+  /// No description provided for @confirmLogout.
+  ///
+  /// In pl, this message translates to:
+  /// **'Czy na pewno chcesz się wylogować?'**
+  String get confirmLogout;
+
+  /// No description provided for @logoutSuccess.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wylogowano pomyślnie'**
+  String get logoutSuccess;
+
+  /// No description provided for @email.
+  ///
+  /// In pl, this message translates to:
+  /// **'Email'**
+  String get email;
+
+  /// No description provided for @password.
+  ///
+  /// In pl, this message translates to:
+  /// **'Hasło'**
+  String get password;
+
+  /// No description provided for @pleaseEnterEmail.
+  ///
+  /// In pl, this message translates to:
+  /// **'Proszę podać email'**
+  String get pleaseEnterEmail;
+
+  /// No description provided for @pleaseEnterPassword.
+  ///
+  /// In pl, this message translates to:
+  /// **'Proszę podać hasło'**
+  String get pleaseEnterPassword;
+
+  /// No description provided for @loginButton.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zaloguj się'**
+  String get loginButton;
+
+  /// No description provided for @registerPrompt.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie masz konta? Zarejestruj się'**
+  String get registerPrompt;
+
+  /// No description provided for @loggingIn.
+  ///
+  /// In pl, this message translates to:
+  /// **'Logowanie...'**
+  String get loggingIn;
+
+  /// No description provided for @logout.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wyloguj się'**
+  String get logout;
+
+  /// No description provided for @settingsLabels.
+  ///
+  /// In pl, this message translates to:
+  /// **'--- Etykiety ustawień ---'**
+  String get settingsLabels;
 
   /// No description provided for @appearance.
   ///
@@ -197,12 +355,6 @@ abstract class AppLocalizations {
   /// **'Zmień hasło'**
   String get changePassword;
 
-  /// No description provided for @logout.
-  ///
-  /// In pl, this message translates to:
-  /// **'Wyloguj się'**
-  String get logout;
-
   /// No description provided for @aboutApp.
   ///
   /// In pl, this message translates to:
@@ -215,53 +367,11 @@ abstract class AppLocalizations {
   /// **'Licencja'**
   String get license;
 
-  /// No description provided for @copyright.
+  /// No description provided for @logsLabels.
   ///
   /// In pl, this message translates to:
-  /// **'© 2025 Motek UI'**
-  String get copyright;
-
-  /// No description provided for @email.
-  ///
-  /// In pl, this message translates to:
-  /// **'Email'**
-  String get email;
-
-  /// No description provided for @password.
-  ///
-  /// In pl, this message translates to:
-  /// **'Hasło'**
-  String get password;
-
-  /// No description provided for @pleaseEnterEmail.
-  ///
-  /// In pl, this message translates to:
-  /// **'Proszę podać email'**
-  String get pleaseEnterEmail;
-
-  /// No description provided for @pleaseEnterPassword.
-  ///
-  /// In pl, this message translates to:
-  /// **'Proszę podać hasło'**
-  String get pleaseEnterPassword;
-
-  /// No description provided for @loginButton.
-  ///
-  /// In pl, this message translates to:
-  /// **'Zaloguj się'**
-  String get loginButton;
-
-  /// No description provided for @registerPrompt.
-  ///
-  /// In pl, this message translates to:
-  /// **'Nie masz konta? Zarejestruj się'**
-  String get registerPrompt;
-
-  /// No description provided for @loggingIn.
-  ///
-  /// In pl, this message translates to:
-  /// **'Logowanie...'**
-  String get loggingIn;
+  /// **'--- Etykiety logów ---'**
+  String get logsLabels;
 
   /// No description provided for @logs.
   ///
@@ -293,10 +403,160 @@ abstract class AppLocalizations {
   /// **'Generuj testowe logi'**
   String get generateTestLogs;
 
+  /// No description provided for @register.
+  ///
+  /// In pl, this message translates to:
+  /// **'Rejestracja'**
+  String get register;
+
+  /// No description provided for @confirmPassword.
+  ///
+  /// In pl, this message translates to:
+  /// **'Potwierdź hasło'**
+  String get confirmPassword;
+
+  /// No description provided for @passwordMismatch.
+  ///
+  /// In pl, this message translates to:
+  /// **'Hasła nie są identyczne'**
+  String get passwordMismatch;
+
+  /// No description provided for @passwordTooShort.
+  ///
+  /// In pl, this message translates to:
+  /// **'Hasło musi mieć co najmniej 6 znaków'**
+  String get passwordTooShort;
+
+  /// No description provided for @registrationSuccess.
+  ///
+  /// In pl, this message translates to:
+  /// **'Rejestracja udana! Możesz się teraz zalogować.'**
+  String get registrationSuccess;
+
+  /// No description provided for @invalidEmail.
+  ///
+  /// In pl, this message translates to:
+  /// **'Proszę podać poprawny adres email'**
+  String get invalidEmail;
+
+  /// No description provided for @welcomeMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Witaj w aplikacji Motek UI!'**
+  String get welcomeMessage;
+
+  /// No description provided for @testLogs.
+  ///
+  /// In pl, this message translates to:
+  /// **'Testuj logi'**
+  String get testLogs;
+
+  /// No description provided for @testLogSaved.
+  ///
+  /// In pl, this message translates to:
+  /// **'Test log zapisany w konsoli'**
+  String get testLogSaved;
+
+  /// No description provided for @loginRequired.
+  ///
+  /// In pl, this message translates to:
+  /// **'Musisz być zalogowany, aby przeglądać notatki'**
+  String get loginRequired;
+
+  /// No description provided for @settingsSaved.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ustawienia zapisane'**
+  String get settingsSaved;
+
+  /// No description provided for @logFilePath.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ścieżka do pliku logów:'**
+  String get logFilePath;
+
+  /// No description provided for @logLevel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Poziom logowania:'**
+  String get logLevel;
+
+  /// No description provided for @loggingSettings.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ustawienia logowania'**
+  String get loggingSettings;
+
+  /// No description provided for @notLoggedIn.
+  ///
+  /// In pl, this message translates to:
+  /// **'Niezalogowany'**
+  String get notLoggedIn;
+
+  /// No description provided for @notesLabels.
+  ///
+  /// In pl, this message translates to:
+  /// **'--- Etykiety notatek ---'**
+  String get notesLabels;
+
+  /// No description provided for @saveNote.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapisz notatkę'**
+  String get saveNote;
+
+  /// No description provided for @editingNote.
+  ///
+  /// In pl, this message translates to:
+  /// **'Edycja notatki'**
+  String get editingNote;
+
+  /// No description provided for @formatText.
+  ///
+  /// In pl, this message translates to:
+  /// **'Formatuj tekst'**
+  String get formatText;
+
+  /// No description provided for @boldText.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pogrubienie'**
+  String get boldText;
+
+  /// No description provided for @italicText.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kursywa'**
+  String get italicText;
+
+  /// No description provided for @underlineText.
+  ///
+  /// In pl, this message translates to:
+  /// **'Podkreślenie'**
+  String get underlineText;
+
+  /// No description provided for @bulletList.
+  ///
+  /// In pl, this message translates to:
+  /// **'Lista punktowana'**
+  String get bulletList;
+
+  /// No description provided for @numberList.
+  ///
+  /// In pl, this message translates to:
+  /// **'Lista numerowana'**
+  String get numberList;
+
+  /// No description provided for @insertImage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wstaw obraz'**
+  String get insertImage;
+
   /// No description provided for @noNotes.
   ///
   /// In pl, this message translates to:
-  /// **'Brak notatek'**
+  /// **'Brak notatek. Utwórz swoją pierwszą notatkę!'**
   String get noNotes;
 
   /// No description provided for @noTitle.
@@ -323,6 +583,12 @@ abstract class AppLocalizations {
   /// **'Nowa notatka'**
   String get newNote;
 
+  /// No description provided for @editNote.
+  ///
+  /// In pl, this message translates to:
+  /// **'Edytuj notatkę'**
+  String get editNote;
+
   /// No description provided for @title.
   ///
   /// In pl, this message translates to:
@@ -335,59 +601,17 @@ abstract class AppLocalizations {
   /// **'Treść'**
   String get content;
 
-  /// No description provided for @cancel.
-  ///
-  /// In pl, this message translates to:
-  /// **'Anuluj'**
-  String get cancel;
-
-  /// No description provided for @create.
-  ///
-  /// In pl, this message translates to:
-  /// **'Utwórz'**
-  String get create;
-
-  /// No description provided for @edit.
-  ///
-  /// In pl, this message translates to:
-  /// **'Edytuj notatkę'**
-  String get edit;
-
-  /// No description provided for @save.
-  ///
-  /// In pl, this message translates to:
-  /// **'Zapisz'**
-  String get save;
-
-  /// No description provided for @confirmDelete.
-  ///
-  /// In pl, this message translates to:
-  /// **'Potwierdź usunięcie'**
-  String get confirmDelete;
-
   /// Potwierdzenie usunięcia notatki
   ///
   /// In pl, this message translates to:
   /// **'Czy na pewno chcesz usunąć notatkę \"{title}\"?'**
   String confirmDeleteNote(String title);
 
-  /// No description provided for @delete.
-  ///
-  /// In pl, this message translates to:
-  /// **'Usuń'**
-  String get delete;
-
   /// Komunikat po usunięciu notatki
   ///
   /// In pl, this message translates to:
-  /// **'Usunięto notatkę: {title}'**
+  /// **'Notatka została pomyślnie usunięta'**
   String noteDeleted(String title);
-
-  /// No description provided for @undoAction.
-  ///
-  /// In pl, this message translates to:
-  /// **'Cofnij'**
-  String get undoAction;
 
   /// No description provided for @deleteError.
   ///
@@ -395,17 +619,17 @@ abstract class AppLocalizations {
   /// **'Nie udało się usunąć notatki'**
   String get deleteError;
 
-  /// Komunikat błędu
+  /// No description provided for @loadNotesError.
   ///
   /// In pl, this message translates to:
-  /// **'Błąd: {message}'**
-  String error(String message);
+  /// **'Nie udało się załadować notatek: {error}'**
+  String loadNotesError(Object error);
 
-  /// No description provided for @tryAgain.
+  /// No description provided for @notebooksLabels.
   ///
   /// In pl, this message translates to:
-  /// **'Spróbuj ponownie'**
-  String get tryAgain;
+  /// **'--- Etykiety notatników ---'**
+  String get notebooksLabels;
 
   /// No description provided for @noNotebooks.
   ///
@@ -449,23 +673,113 @@ abstract class AppLocalizations {
   /// **'Otwarto notatnik: {name}'**
   String notebookOpened(String name);
 
-  /// Data utworzenia
-  ///
-  /// In pl, this message translates to:
-  /// **'Utworzono: {date}'**
-  String created(String date);
-
-  /// Błąd ładowania notatek
-  ///
-  /// In pl, this message translates to:
-  /// **'Nie udało się załadować notatek: {message}'**
-  String loadNotesError(String message);
-
   /// Błąd ładowania notatników
   ///
   /// In pl, this message translates to:
   /// **'Nie udało się załadować notatników: {message}'**
   String loadNotebooksError(String message);
+
+  /// Komunikat wyświetlany po usunięciu notatnika
+  ///
+  /// In pl, this message translates to:
+  /// **'Usunięto notatnik: {name}'**
+  String notebookDeleted(String name);
+
+  /// No description provided for @untitledNote.
+  ///
+  /// In pl, this message translates to:
+  /// **'Notatka bez tytułu'**
+  String get untitledNote;
+
+  /// No description provided for @retry.
+  ///
+  /// In pl, this message translates to:
+  /// **'Spróbuj ponownie'**
+  String get retry;
+
+  /// No description provided for @deleteNote.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usuń notatkę'**
+  String get deleteNote;
+
+  /// No description provided for @deleteNoteConfirmTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usuń notatkę'**
+  String get deleteNoteConfirmTitle;
+
+  /// No description provided for @deleteNoteConfirmMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Czy na pewno chcesz usunąć notatkę \"{title}\"?'**
+  String deleteNoteConfirmMessage(Object title);
+
+  /// No description provided for @deleteNoteFailed.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się usunąć notatki'**
+  String get deleteNoteFailed;
+
+  /// No description provided for @sessionExpired.
+  ///
+  /// In pl, this message translates to:
+  /// **'Twoja sesja wygasła. Zaloguj się ponownie.'**
+  String get sessionExpired;
+
+  /// Liczba notatek
+  ///
+  /// In pl, this message translates to:
+  /// **'{count, plural, one{# notatka} few{# notatki} many{# notatek} other{# notatek}}'**
+  String noteCount(num count);
+
+  /// Wyświetlane, gdy nie ma żadnych tagów
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak tagów'**
+  String get noTags;
+
+  /// No description provided for @unsavedChanges.
+  ///
+  /// In pl, this message translates to:
+  /// **'Masz niezapisane zmiany.'**
+  String get unsavedChanges;
+
+  /// No description provided for @discardChanges.
+  ///
+  /// In pl, this message translates to:
+  /// **'Czy chcesz porzucić zmiany?'**
+  String get discardChanges;
+
+  /// No description provided for @discard.
+  ///
+  /// In pl, this message translates to:
+  /// **'Porzuć'**
+  String get discard;
+
+  /// No description provided for @noteTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Tytuł notatki'**
+  String get noteTitle;
+
+  /// No description provided for @startTyping.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zacznij pisać...'**
+  String get startTyping;
+
+  /// No description provided for @notebook.
+  ///
+  /// In pl, this message translates to:
+  /// **'Notatnik'**
+  String get notebook;
+
+  /// No description provided for @noNotebook.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak notatnika'**
+  String get noNotebook;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
@@ -477,7 +791,7 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en', 'pl'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['en', 'es', 'pl'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -489,6 +803,7 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
     case 'en': return AppLocalizationsEn();
+    case 'es': return AppLocalizationsEs();
     case 'pl': return AppLocalizationsPl();
   }
 

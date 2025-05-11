@@ -1,0 +1,240 @@
+{
+  "@@locale": "es",
+  "appTitle": "Motek UI",
+  "version": "Versión {version}",
+  "@version": {
+    "description": "Versión de la aplicación",
+    "placeholders": {
+      "version": {
+        "type": "String",
+        "example": "1.0.0"
+      }
+    }
+  },
+  "copyright": "© 2025 Motek UI",
+  "noDescription": "Sin descripción",
+  "error": "Error: {message}",
+  "@error": {
+    "description": "Mensaje de error",
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "Operación fallida"
+      }
+    }
+  },
+  "tryAgain": "Intentar de nuevo",
+  "created": "Creado: {date}",
+  "@created": {
+    "description": "Fecha de creación",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "01/01/2025"
+      }
+    }
+  },
+  "cancel": "Cancelar",
+  "save": "Guardar",
+  "delete": "Eliminar",
+  "create": "Crear",
+  "edit": "Editar nota",
+  "undoAction": "Deshacer",
+  "confirmDelete": "Confirmar eliminación",
+  "navigationLabels": "--- Etiquetas de navegación ---",
+  "home": "Inicio",
+  "settings": "Configuración",
+  "notes": "Notas",
+  "notebooks": "Cuadernos",
+  "login": "Iniciar sesión",
+  "authenticationLabels": "--- Etiquetas de autenticación ---",
+  "loggedInAs": "Conectado como",
+  "confirmLogout": "¿Seguro que quieres cerrar sesión?",
+  "logoutSuccess": "Sesión cerrada con éxito",
+  "email": "Correo electrónico",
+  "password": "Contraseña",
+  "pleaseEnterEmail": "Por favor, introduce tu correo electrónico",
+  "pleaseEnterPassword": "Por favor, introduce tu contraseña",
+  "loginButton": "Iniciar sesión",
+  "registerPrompt": "¿No tienes cuenta? Regístrate",
+  "loggingIn": "Iniciando sesión...",
+  "logout": "Cerrar sesión",
+  "settingsLabels": "--- Etiquetas de configuración ---",
+  "appearance": "Apariencia",
+  "darkMode": "Modo oscuro",
+  "darkModeDescription": "Cambiar la apariencia de la aplicación a oscuro",
+  "fontSize": "Tamaño de fuente",
+  "notifications": "Notificaciones",
+  "notificationsEnable": "Activar o desactivar notificaciones",
+  "language": "Idioma de la aplicación",
+  "account": "Cuenta",
+  "editProfile": "Editar perfil",
+  "changePassword": "Cambiar contraseña",
+  "aboutApp": "Acerca de la aplicación",
+  "license": "Licencia",
+  "logsLabels": "--- Etiquetas de registros ---",
+  "logs": "Registros",
+  "refresh": "Actualizar",
+  "copyToClipboard": "Copiar al portapapeles",
+  "logsCopied": "Registros copiados al portapapeles",
+  "generateTestLogs": "Generar registros de prueba",
+  "register": "Registrarse",
+  "confirmPassword": "Confirmar contraseña",
+  "passwordMismatch": "Las contraseñas no coinciden",
+  "passwordTooShort": "La contraseña debe tener al menos 6 caracteres",
+  "registrationSuccess": "¡Registro exitoso! Ahora puedes iniciar sesión.",
+  "invalidEmail": "Por favor, introduce una dirección de correo válida",
+  "welcomeMessage": "¡Bienvenido a Motek UI!",
+  "testLogs": "Registros de prueba",
+  "testLogSaved": "Registro de prueba guardado en la consola",
+  "loginRequired": "Debes iniciar sesión para ver las notas",
+  "settingsSaved": "Configuración guardada",
+  "logFilePath": "Ruta del archivo de registro:",
+  "logLevel": "Nivel de registro:",
+  "loggingSettings": "Configuración de registro",
+  "notLoggedIn": "No conectado",
+  "notesLabels": "--- Etiquetas de notas ---",
+  "saveNote": "Guardar nota",
+  "editingNote": "Editando nota",
+  "formatText": "Formatear texto",
+  "boldText": "Negrita",
+  "italicText": "Cursiva",
+  "underlineText": "Subrayado",
+  "bulletList": "Lista de viñetas",
+  "numberList": "Lista numerada",
+  "insertImage": "Insertar imagen",
+  "noNotes": "Sin notas",
+  "noTitle": "Nota sin título",
+  "noContent": "Sin contenido",
+  "dateUnknown": "Fecha desconocida",
+  "newNote": "Nueva nota",
+  "editNote": "Editar nota",
+  "title": "Título",
+  "content": "Contenido",
+  "confirmDeleteNote": "¿Seguro que quieres eliminar la nota \"{title}\"?",
+  "@confirmDeleteNote": {
+    "description": "Confirmación para eliminar nota",
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "example": "Mi nota"
+      }
+    }
+  },
+  "noteDeleted": "Nota eliminada: {title}",
+  "@noteDeleted": {
+    "description": "Mensaje después de eliminar nota",
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "example": "Mi nota"
+      }
+    }
+  },
+  "deleteError": "No se pudo eliminar la nota",
+  "loadNotesError": "No se pudieron cargar las notas: {message}",
+  "@loadNotesError": {
+    "description": "Error al cargar notas",
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "Error de conexión"
+      }
+    }
+  },
+  "notebooksLabels": "--- Etiquetas de cuadernos ---",
+  "noNotebooks": "Sin cuadernos",
+  "newNotebook": "Nuevo cuaderno",
+  "notebookName": "Nombre del cuaderno",
+  "confirmDeleteNotebook": "¿Seguro que quieres eliminar el cuaderno \"{name}\"?",
+  "@confirmDeleteNotebook": {
+    "description": "Confirmación para eliminar cuaderno",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Mi cuaderno"
+      }
+    }
+  },
+  "notebookDeleteError": "No se pudo eliminar el cuaderno",
+  "editNotebook": "Editar cuaderno",
+  "notebookOpened": "Cuaderno abierto: {name}",
+  "@notebookOpened": {
+    "description": "Mensaje después de abrir cuaderno",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Mi cuaderno"
+      }
+    }
+  },
+  "loadNotebooksError": "No se pudieron cargar los cuadernos: {message}",
+  "@loadNotebooksError": {
+    "description": "Error al cargar cuadernos",
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "Error de conexión"
+      }
+    }
+  },
+  "notebookDeleted": "Cuaderno eliminado: {name}",
+  "@notebookDeleted": {
+    "description": "Mensaje mostrado después de eliminar cuaderno",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Mi cuaderno"
+      }
+    }
+  },
+  "deleteNote": "Eliminar nota",
+  "notes": "Notas",
+  "noNotes": "Aún no hay notas. ¡Crea tu primera nota!",
+  "loadNotesError": "No se pudieron cargar las notas: {error}",
+  "@loadNotesError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "deleteNoteConfirmTitle": "Eliminar nota",
+  "deleteNoteConfirmMessage": "¿Seguro que quieres eliminar la nota \"{title}\"?",
+  "@deleteNoteConfirmMessage": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "delete": "Eliminar",
+  "cancel": "Cancelar",
+  "noteDeleted": "Nota eliminada correctamente",
+  "deleteNoteFailed": "No se pudo eliminar la nota",
+  "error": "Error: {message}",
+  "@error": {
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "tryAgain": "Intentar de nuevo",
+  "refresh": "Actualizar",
+  "loginRequired": "Necesitas iniciar sesión para ver las notas",
+  "login": "Iniciar sesión",
+  "sessionExpired": "Tu sesión ha expirado. Por favor, inicia sesión de nuevo.",
+  "noteCount": "{count, plural, one{# nota} other{# notas}}",
+  "@noteCount": {
+    "description": "Número de notas",
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "noTags": "No se encontraron etiquetas",
+    "@noTags": {
+    "description": "Se muestra cuando no hay etiquetas"
+    },
+  "unsavedChanges": "Tienes cambios sin guardar.",
+  "discardChanges": "¿Quieres descartar tus cambios?",
+  "discard": "Descartar",
+  "noteTitle": "Título de la nota",
+  "startTyping": "Empieza a escribir...",
+  "notebook": "Cuaderno",
+  "noNotebook": "Sin cuaderno"
+} 

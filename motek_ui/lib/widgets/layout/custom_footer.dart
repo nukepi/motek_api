@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:motek_ui/services/auth_service.dart';
+import 'package:provider/provider.dart';
 import '../../models/content_type.dart';
 
 class CustomFooter extends StatelessWidget {
@@ -20,20 +22,25 @@ class CustomFooter extends StatelessWidget {
       color: isDarkMode 
           ? const Color(0xFF151026) 
           : Colors.amber.withOpacity(0.8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: _buildFooterItems(isDarkMode),
+      child: Consumer<AuthService>(
+        builder: (context, authService, _) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: _buildFooterItems(isDarkMode, authService),
+          );
+        },
       ),
     );
   }
 
-  List<Widget> _buildFooterItems(bool isDarkMode) {
+  List<Widget> _buildFooterItems(bool isDarkMode, AuthService authService) {
     // Wybieramy tylko niektóre typy zawartości do wyświetlenia w stopce
     final footerContentTypes = [
       ContentType.home,
       ContentType.notebooks, // Dodaj notatniki do stopki
       ContentType.notes,
-      ContentType.login,
+      // Pokaż login tylko jeśli użytkownik nie jest zalogowany
+      if (!authService.isLoggedIn) ContentType.login,
     ];
     
     return footerContentTypes.map((type) {

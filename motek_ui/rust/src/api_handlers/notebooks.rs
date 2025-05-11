@@ -1,15 +1,52 @@
-use chrono::DateTime;
-use serde::{Serialize, Deserialize};
+use serde::{Serialize, Deserialize, Deserializer};
+use chrono::{DateTime, Utc};
 use crate::utils::helpers::{authorized_get, authorized_post, authorized_put, authorized_delete};
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Debug, Clone)]
 pub struct Notebook {
     pub id: String,
     pub user_id: String,
     pub name: String,
-    pub parent_id: String,
+    pub parent_id: Option<String>,
     pub created_at: i64,
     pub updated_at: i64,
+}
+
+impl<'de> Deserialize<'de> for Notebook {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        #[derive(Deserialize)]
+        struct NotebookHelper {
+            id: String,
+            user_id: String,
+            name: String,
+            parent_id: Option<String>,
+            created_at: String,
+            updated_at: String,
+        }
+
+        let helper = NotebookHelper::deserialize(deserializer)?;
+        
+        // Konwersja ciągów znaków na timestamp
+        let created_at = DateTime::parse_from_rfc3339(&helper.created_at)
+            .map_err(serde::de::Error::custom)?
+            .timestamp_millis();
+            
+        let updated_at = DateTime::parse_from_rfc3339(&helper.updated_at)
+            .map_err(serde::de::Error::custom)?
+            .timestamp_millis();
+
+        Ok(Notebook {
+            id: helper.id,
+            user_id: helper.user_id,
+            name: helper.name,
+            parent_id: helper.parent_id,
+            created_at,
+            updated_at,
+        })
+    }
 }
 
 /// Fetches the list of all notebooks for the current user.

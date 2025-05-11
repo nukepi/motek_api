@@ -67,9 +67,9 @@ class ThemeManager {
       }),
       trackColor: WidgetStateProperty.resolveWith<Color>((states) {
         if (states.contains(WidgetState.selected)) {
-          return accentColor.withOpacity(0.5); // Półprzezroczysty magenta dla toru przełącznika
+          return accentColor.withValues(alpha: 0.5); // Półprzezroczysty magenta dla toru przełącznika
         }
-        return Colors.grey.withOpacity(0.5);
+        return Colors.grey.withValues(alpha:0.5);
       }),
     ),
   );

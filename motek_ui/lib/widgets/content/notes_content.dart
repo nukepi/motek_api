@@ -1,7 +1,14 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:motek_ui/l10n/app_localizations.dart';
-import 'package:motek_ui/src/rust/api/endpoint.dart';
 import 'package:motek_ui/src/rust/api_handlers/notes.dart';
+import 'package:motek_ui/src/rust/api/endpoint.dart';
+import 'package:motek_ui/services/auth_service.dart';
+import 'package:provider/provider.dart';
+import 'package:motek_ui/screens/note_editor_screen.dart';
+import 'package:motek_ui/models/content_type.dart';
+import 'package:motek_ui/screens/main_layout.dart';
+import 'dart:async';
 
 class NotesContent extends StatefulWidget {
   const NotesContent({super.key});
@@ -14,152 +21,145 @@ class _NotesContentState extends State<NotesContent> {
   bool _isLoading = true;
   List<Note> _notes = [];
   String? _errorMessage;
+  Timer? _refreshTimer;
 
   @override
   void initState() {
     super.initState();
+    _refreshTimer = Timer.periodic(const Duration(seconds: 30), (_) {
+      if (mounted) {
+        _loadNotes();
+      }
+    });
     _loadNotes();
   }
 
+  @override
+  void dispose() {
+    _refreshTimer?.cancel();
+    super.dispose();
+  }
+
   Future<void> _loadNotes() async {
-    final l10n = AppLocalizations.of(context)!;
+    // Sprawdź czy użytkownik jest zalogowany
+    final authService = Provider.of<AuthService>(context, listen: false);
+    if (!authService.isLoggedIn) {
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
+    
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
     try {
-      setState(() {
-        _isLoading = true;
-        _errorMessage = null;
-      });
-      
       final notes = await listNotes();
-      
-      setState(() {
-        _notes = notes;
-        _isLoading = false;
-      });
+
+      if (mounted) {
+        setState(() {
+          _notes = notes;
+          _isLoading = false;
+        });
+      }
     } catch (e) {
-      setState(() {
-        _errorMessage = l10n.loadNotesError(e.toString());
-        _isLoading = false;
-      });
+      if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
+        setState(() {
+          _errorMessage = l10n.loadNotesError(e.toString());
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  // Funkcja do parsowania treści notatki na czysty tekst
+  String _getPlainTextFromContent(String content) {
+    try {
+      final jsonData = json.decode(content);
+      
+      if (jsonData is List) {
+        // Format Delta z edytora Quill
+        String plainText = '';
+        for (var op in jsonData) {
+          if (op is Map && op.containsKey('insert')) {
+            plainText += op['insert'].toString();
+          }
+        }
+        return plainText;
+      }
+      
+      return jsonData.toString();
+    } catch (e) {
+      return content;
     }
   }
 
   Future<void> _addNewNote() async {
-    final l10n = AppLocalizations.of(context)!;
-    final titleController = TextEditingController();
-    final contentController = TextEditingController();
-    
-    return showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.newNote),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: titleController,
-              decoration: InputDecoration(
-                labelText: l10n.title,
-              ),
-              autofocus: true,
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: contentController,
-              decoration: InputDecoration(
-                labelText: l10n.content,
-              ),
-              maxLines: 5,
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(l10n.cancel),
-          ),
-          TextButton(
-            onPressed: () async {
-              if (titleController.text.isNotEmpty) {
-                Navigator.pop(context);
-                try {
-                  await createNote(
-                    title: titleController.text,
-                    content: contentController.text,
-                  );
-                  _loadNotes(); // Odśwież listę
-                } catch (e) {
-                  if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(l10n.error(e.toString()))),
-                    );
-                  }
-                }
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NoteEditorScreen(
+          onSave: (title, content) async {
+            try {
+              await createNote(
+                title: title,
+                content: content,
+              );
+              return true;
+            } catch (e) {
+              if (mounted) {
+                final l10n = AppLocalizations.of(context)!;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(l10n.error(e.toString())))
+                );
               }
-            },
-            child: Text(l10n.create),
-          ),
-        ],
+              return false;
+            }
+          },
+        ),
       ),
     );
+    
+    if (result == true && mounted) {
+      _loadNotes();
+    }
   }
 
   Future<void> _editNote(Note note) async {
-    final l10n = AppLocalizations.of(context)!;
-    final titleController = TextEditingController(text: note.title);
-    final contentController = TextEditingController(text: note.content);
-    
-    return showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.edit),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: titleController,
-              decoration: InputDecoration(
-                labelText: l10n.title,
-              ),
-              autofocus: true,
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: contentController,
-              decoration: InputDecoration(
-                labelText: l10n.content,
-              ),
-              maxLines: 5,
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(l10n.cancel),
-          ),
-          TextButton(
-            onPressed: () async {
-              Navigator.pop(context);
-              try {
-                await updateNote(
-                  noteId: note.id,
-                  title: titleController.text,
-                  content: contentController.text,
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NoteEditorScreen(
+          initialTitle: note.title,
+          initialContent: note.content,
+          onSave: (title, content) async {
+            try {
+              await updateNote(
+                noteId: note.id,
+                title: title,
+                content: content,
+              );
+              return true;
+            } catch (e) {
+              if (mounted) {
+                final l10n = AppLocalizations.of(context)!;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(l10n.error(e.toString())))
                 );
-                _loadNotes(); // Odśwież listę
-              } catch (e) {
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(l10n.error(e.toString()))),
-                  );
-                }
               }
-            },
-            child: Text(l10n.save),
-          ),
-        ],
+              return false;
+            }
+          },
+        ),
       ),
     );
+    
+    if (result == true && mounted) {
+      _loadNotes();
+    }
   }
 
   Future<void> _deleteNote(Note note) async {
@@ -167,54 +167,50 @@ class _NotesContentState extends State<NotesContent> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(l10n.confirmDelete),
-        content: Text(l10n.confirmDeleteNote(note.title)),
+        title: Text(l10n.deleteNoteConfirmTitle),
+        content: Text(l10n.deleteNoteConfirmMessage(note.title)),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context, false),
+            onPressed: () => Navigator.of(context).pop(false),
             child: Text(l10n.cancel),
           ),
           TextButton(
-            onPressed: () => Navigator.pop(context, true),
+            onPressed: () => Navigator.of(context).pop(true),
             child: Text(l10n.delete, style: const TextStyle(color: Colors.red)),
           ),
         ],
       ),
-    ) ?? false;
+    );
 
-    if (confirmed) {
+    if (confirmed == true) {
+      setState(() {
+        _isLoading = true;
+      });
+
       try {
         final success = await deleteNote(noteId: note.id);
-        if (success) {
-          setState(() {
-            _notes.remove(note);
-          });
-          if (mounted) {
+        if (mounted) {
+          if (success) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(l10n.noteDeleted(note.title)),
-                action: SnackBarAction(
-                  label: l10n.undoAction,
-                  onPressed: () {
-                    // Implementacja cofnięcia usunięcia byłaby tutaj
-                    // Dla uproszczenia, po prostu odświeżamy listę
-                    _loadNotes();
-                  },
-                ),
-              ),
+              SnackBar(content: Text(l10n.noteDeleted(note.title)))
             );
-          }
-        } else {
-          if (mounted) {
+            _loadNotes();
+          } else {
+            setState(() {
+              _isLoading = false;
+            });
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(l10n.deleteError)),
+              SnackBar(content: Text(l10n.deleteNoteFailed))
             );
           }
         }
       } catch (e) {
         if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(l10n.error(e.toString()))),
+            SnackBar(content: Text(l10n.error(e.toString())))
           );
         }
       }
@@ -224,7 +220,32 @@ class _NotesContentState extends State<NotesContent> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+    final authService = Provider.of<AuthService>(context);
+
+    // Sprawdź czy użytkownik jest zalogowany
+    if (!authService.isLoggedIn) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(l10n.loginRequired),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                // Przejdź do ekranu logowania
+                final mainLayout = context.findAncestorStateOfType<State<MainLayout>>();
+                if (mainLayout != null) {
+                  final mainLayoutState = mainLayout as dynamic;
+                  mainLayoutState.changeContent(ContentType.login);
+                }
+              },
+              child: Text(l10n.login),
+            ),
+          ],
+        ),
+      );
+    }
+
     if (_isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -236,52 +257,68 @@ class _NotesContentState extends State<NotesContent> {
           children: [
             Text(_errorMessage!, style: const TextStyle(color: Colors.red)),
             const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _loadNotes,
-              child: Text(l10n.tryAgain),
-            ),
+            ElevatedButton(onPressed: _loadNotes, child: Text(l10n.tryAgain)),
           ],
         ),
       );
     }
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text(l10n.notes),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () => _loadNotes(),
+            tooltip: l10n.refresh,
+          ),
+        ],
+      ),
       body: _notes.isEmpty
           ? Center(child: Text(l10n.noNotes))
           : ListView.builder(
               itemCount: _notes.length,
               itemBuilder: (context, index) {
                 final note = _notes[index];
-                return Card(
-                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  elevation: 2,
+                // Parsowanie treści notatki na czysty tekst
+                final plainTextContent = _getPlainTextFromContent(note.content);
+                
+                return Dismissible(
+                  key: Key(note.id),
+                  background: Container(
+                    color: Colors.red,
+                    alignment: Alignment.centerRight,
+                    padding: const EdgeInsets.only(right: 20),
+                    child: const Icon(Icons.delete, color: Colors.white),
+                  ),
+                  direction: DismissDirection.endToStart,
+                  confirmDismiss: (_) async {
+                    await _deleteNote(note);
+                    return false; // Nie usuwamy elementu z listy, bo _loadNotes() to zrobi
+                  },
                   child: ListTile(
-                    title: Text(
-                      note.title.isEmpty ? l10n.noTitle : note.title,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    title: Text(note.title),
+                    subtitle: Text(
+                      plainTextContent.length > 50
+                          ? '${plainTextContent.substring(0, 50)}...'
+                          : plainTextContent,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        const SizedBox(height: 4),
-                        Text(note.content.isEmpty 
-                            ? l10n.noContent 
-                            : (note.content.length > 100 
-                                ? '${note.content.substring(0, 100)}...'
-                                : note.content)),
-                        const SizedBox(height: 4),
-                        Text(
-                          l10n.created(_formatDate(DateTime.fromMicrosecondsSinceEpoch(note.createdAt))),
-                          style: const TextStyle(fontSize: 12, color: Colors.grey),
+                        IconButton(
+                          icon: const Icon(Icons.edit),
+                          onPressed: () => _editNote(note),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () => _deleteNote(note),
                         ),
                       ],
                     ),
-                    isThreeLine: true,
                     onTap: () => _editNote(note),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.red),
-                      onPressed: () => _deleteNote(note),
-                    ),
                   ),
                 );
               },
@@ -292,9 +329,5 @@ class _NotesContentState extends State<NotesContent> {
         child: const Icon(Icons.add),
       ),
     );
-  }
-
-  String _formatDate(DateTime date) {
-    return '${date.day}.${date.month}.${date.year}';
   }
 }
