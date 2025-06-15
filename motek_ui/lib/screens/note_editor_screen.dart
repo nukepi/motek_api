@@ -36,8 +36,8 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
   final ScrollController _scrollController = ScrollController();
   bool _hasUnsavedChanges = false;
   final FocusNode _keyboardFocusNode = FocusNode();
-  
-  // Pola dla tagów i notatników
+
+  // Fields for tags and notebooks
   List<String> _selectedTags = [];
   String? _selectedNotebookId;
   List<Notebook> _notebooks = [];
@@ -46,11 +46,11 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
   @override
   void initState() {
     super.initState();
-    
+
     if (widget.initialTitle != null) {
       _titleController.text = widget.initialTitle!;
     }
-    
+
     // Inicjalizacja kontrolera Quill z bezpiecznym parsowaniem JSON
     if (widget.initialContent != null && widget.initialContent!.isNotEmpty) {
       try {
@@ -93,20 +93,20 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
         });
       }
     });
-    
+
     // Inicjalizacja tagów i notatnika
     _selectedTags = List.from(widget.initialTags);
     _selectedNotebookId = widget.initialNotebookId;
-    
+
     // Ładowanie notatników
     _loadNotebooks();
   }
-  
+
   Future<void> _loadNotebooks() async {
     setState(() {
       _isLoadingNotebooks = true;
     });
-    
+
     try {
       final notebooks = await listNotebooks();
       if (mounted) {
@@ -124,9 +124,9 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
       }
     }
   }
-  
+
   Future<List<String>> _getAllTags() async {
-    // Przykładowe tagi - w przyszłości można dodać API do pobierania tagów
+    // Example tags - in the future, an API for fetching tags can be added
     return ['important', 'work', 'personal', 'ideas', 'todo'];
   }
 
@@ -147,19 +147,20 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
     setState(() {
       _hasUnsavedChanges = false;
     });
-    
+
     final l10n = AppLocalizations.of(context)!;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l10n.saveNote)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(l10n.saveNote)));
   }
 
-  // Obsługa skrótów klawiaturowych
+  // Keyboard shortcut handling
   KeyEventResult _handleKeyEvent(FocusNode node, KeyEvent event) {
-    // Sprawdź czy to Ctrl+S
+    // Check if it's Ctrl+S
     if (event is KeyDownEvent &&
         event.logicalKey == LogicalKeyboardKey.keyS &&
-        (HardwareKeyboard.instance.isControlPressed || HardwareKeyboard.instance.isMetaPressed)) {
+        (HardwareKeyboard.instance.isControlPressed ||
+            HardwareKeyboard.instance.isMetaPressed)) {
       _saveNote();
       return KeyEventResult.handled;
     }
@@ -169,35 +170,35 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    
+
     return PopScope(
       canPop: true,
       onPopInvokedWithResult: (didPop, result) async {
         if (!didPop && _hasUnsavedChanges) {
           final shouldDiscard = await showDialog<bool>(
             context: context,
-            builder: (context) => AlertDialog(
-              title: Text(l10n.unsavedChanges),
-              content: Text(l10n.discardChanges),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context, false),
-                  child: Text(l10n.cancel),
+            builder:
+                (context) => AlertDialog(
+                  title: Text(l10n.unsavedChanges),
+                  content: Text(l10n.discardChanges),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      child: Text(l10n.cancel),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, true),
+                      child: Text(l10n.discard),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        _saveNote();
+                        Navigator.pop(context, true);
+                      },
+                      child: Text(l10n.save),
+                    ),
+                  ],
                 ),
-                TextButton(
-                  onPressed: () => Navigator.pop(context, true),
-                  child: Text(l10n.discard),
-                ),
-                TextButton(
-                  onPressed: () {
-                    _saveNote();
-                    Navigator.pop(context, true);
-                  },
-                  child: Text(l10n.save),
-                ),
-              ],
-            ),
           );
           if (shouldDiscard != true) return;
         }
@@ -218,120 +219,124 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
               ),
             ],
           ),
-          body: _isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextField(
-                        controller: _titleController,
-                        decoration: InputDecoration(
-                          hintText: l10n.noteTitle,
-                          border: InputBorder.none,
-                          contentPadding: const EdgeInsets.all(8),
-                        ),
-                        style: Theme.of(context).textTheme.headlineSmall,
-                      ),
-                    ),
-                    const Divider(),
-                    Expanded(
-                      child: Padding(
+          body:
+              _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : Column(
+                    children: [
+                      Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: QuillEditor(
-                          focusNode: _editorFocusNode,
-                          controller: _quillController,
-                          scrollController: _scrollController,
-                          config: QuillEditorConfig(
-                            scrollable: true,
-                            autoFocus: false,
-                            placeholder: l10n.startTyping,
-                            expands: true,
-                            padding: const EdgeInsets.all(8),
-                            customStyles: DefaultStyles(
-                              h1: DefaultTextBlockStyle(
-                                Theme.of(context).textTheme.headlineLarge!,
-                                const HorizontalSpacing(16, 0),
-                                const VerticalSpacing(16, 0),
-                                const VerticalSpacing(0, 0),
-                                null,
-                              ),
-                              h2: DefaultTextBlockStyle(
-                                Theme.of(context).textTheme.headlineMedium!,
-                                const HorizontalSpacing(16, 0),
-                                const VerticalSpacing(16, 0),
-                                const VerticalSpacing(0, 0),
-                                null,
-                              ),
-                              h3: DefaultTextBlockStyle(
-                                Theme.of(context).textTheme.headlineSmall!,
-                                const HorizontalSpacing(16, 0),
-                                const VerticalSpacing(16, 0),
-                                const VerticalSpacing(0, 0),
-                                null,
-                              ),
-                              paragraph: DefaultTextBlockStyle(
-                                Theme.of(context).textTheme.bodyLarge!,
-                                const HorizontalSpacing(0, 0),
-                                const VerticalSpacing(0, 0),
-                                const VerticalSpacing(0, 0),
-                                null,
+                        child: TextField(
+                          controller: _titleController,
+                          decoration: InputDecoration(
+                            hintText: l10n.noteTitle,
+                            border: InputBorder.none,
+                            contentPadding: const EdgeInsets.all(8),
+                          ),
+                          style: Theme.of(context).textTheme.headlineSmall,
+                        ),
+                      ),
+                      const Divider(),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: QuillEditor(
+                            focusNode: _editorFocusNode,
+                            controller: _quillController,
+                            scrollController: _scrollController,
+                            config: QuillEditorConfig(
+                              scrollable: true,
+                              autoFocus: false,
+                              placeholder: l10n.startTyping,
+                              expands: true,
+                              padding: const EdgeInsets.all(8),
+                              customStyles: DefaultStyles(
+                                h1: DefaultTextBlockStyle(
+                                  Theme.of(context).textTheme.headlineLarge!,
+                                  const HorizontalSpacing(16, 0),
+                                  const VerticalSpacing(16, 0),
+                                  const VerticalSpacing(0, 0),
+                                  null,
+                                ),
+                                h2: DefaultTextBlockStyle(
+                                  Theme.of(context).textTheme.headlineMedium!,
+                                  const HorizontalSpacing(16, 0),
+                                  const VerticalSpacing(16, 0),
+                                  const VerticalSpacing(0, 0),
+                                  null,
+                                ),
+                                h3: DefaultTextBlockStyle(
+                                  Theme.of(context).textTheme.headlineSmall!,
+                                  const HorizontalSpacing(16, 0),
+                                  const VerticalSpacing(16, 0),
+                                  const VerticalSpacing(0, 0),
+                                  null,
+                                ),
+                                paragraph: DefaultTextBlockStyle(
+                                  Theme.of(context).textTheme.bodyLarge!,
+                                  const HorizontalSpacing(0, 0),
+                                  const VerticalSpacing(0, 0),
+                                  const VerticalSpacing(0, 0),
+                                  null,
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    const Divider(),
-                    // Sekcja wyboru notatnika i tagów
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Wybór notatnika
-                          DropdownButtonFormField<String?>(
-                            decoration: InputDecoration(
-                              labelText: l10n.notebook,
-                              border: const OutlineInputBorder(),
-                            ),
-                            value: _selectedNotebookId,
-                            items: [
-                              DropdownMenuItem<String?>(
-                                value: null,
-                                child: Text(l10n.noNotebook),
+                      const Divider(),
+                      // Notebook and tag selection section
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Notebook selection
+                            DropdownButtonFormField<String?>(
+                              decoration: InputDecoration(
+                                labelText: l10n.notebook,
+                                border: const OutlineInputBorder(),
                               ),
-                              ..._notebooks.map((notebook) => DropdownMenuItem<String?>(
-                                value: notebook.id,
-                                child: Text(notebook.name),
-                              )),
-                            ],
-                            onChanged: _isLoadingNotebooks
-                                ? null
-                                : (value) {
-                                    setState(() {
-                                      _selectedNotebookId = value;
-                                      _hasUnsavedChanges = true;
-                                    });
-                                  },
-                          ),
-                          const SizedBox(height: 16),
-                          // Wybór tagów
-                          TagSelector(
-                            initialTags: _selectedTags,
-                            onTagsChanged: (tags) {
-                              setState(() {
-                                _selectedTags = tags;
-                                _hasUnsavedChanges = true;
-                              });
-                            },
-                            getAllTagsCallback: _getAllTags,
-                          ),
-                        ],
+                              value: _selectedNotebookId,
+                              items: [
+                                DropdownMenuItem<String?>(
+                                  value: null,
+                                  child: Text(l10n.noNotebook),
+                                ),
+                                ..._notebooks.map(
+                                  (notebook) => DropdownMenuItem<String?>(
+                                    value: notebook.id,
+                                    child: Text(notebook.name),
+                                  ),
+                                ),
+                              ],
+                              onChanged:
+                                  _isLoadingNotebooks
+                                      ? null
+                                      : (value) {
+                                        setState(() {
+                                          _selectedNotebookId = value;
+                                          _hasUnsavedChanges = true;
+                                        });
+                                      },
+                            ),
+                            const SizedBox(height: 16),
+                            // Tag selection
+                            TagSelector(
+                              initialTags: _selectedTags,
+                              onTagsChanged: (tags) {
+                                setState(() {
+                                  _selectedTags = tags;
+                                  _hasUnsavedChanges = true;
+                                });
+                              },
+                              getAllTagsCallback: _getAllTags,
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
           bottomNavigationBar: QuillSimpleToolbar(
             controller: _quillController,
             config: QuillSimpleToolbarConfig(

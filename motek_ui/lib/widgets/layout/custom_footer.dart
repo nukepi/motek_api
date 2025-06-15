@@ -21,7 +21,7 @@ class CustomFooter extends StatelessWidget {
       height: 50,
       color: isDarkMode 
           ? const Color(0xFF151026) 
-          : Colors.amber.withOpacity(0.8),
+          : Colors.amber.withValues(alpha: 0.8),
       child: Consumer<AuthService>(
         builder: (context, authService, _) {
           return Row(

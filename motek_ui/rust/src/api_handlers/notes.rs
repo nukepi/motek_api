@@ -1,12 +1,12 @@
 use serde::{Serialize, Deserialize, Deserializer};
-use chrono::{DateTime, Utc};
+use chrono::DateTime;
 use crate::utils::helpers::{authorized_get, authorized_post, authorized_put, authorized_delete};
 
 #[derive(Serialize, Debug, Clone)]
 pub struct Note {
     pub id: String,
     pub user_id: String,
-    pub notebook_id: Option<String>,  // Zmiana z String na Option<String>
+    pub notebook_id: Option<String>,  // Changed from String to Option<String>
     pub title: String,
     pub content: String,
     pub is_archived: bool,
@@ -16,7 +16,6 @@ pub struct Note {
     pub updated_at: i64,
 }
 
-// Implementacja własnej deserializacji
 impl<'de> Deserialize<'de> for Note {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
@@ -26,22 +25,22 @@ impl<'de> Deserialize<'de> for Note {
         struct NoteHelper {
             id: String,
             user_id: String,
-            notebook_id: Option<String>,  // Obsługa null
+            notebook_id: Option<String>,  // Handles null
             title: String,
             content: String,
             is_archived: bool,
             is_pinned: bool,
-            tags: serde_json::Value,  // Obsługa różnych formatów tagów
-            created_at: String,       // Daty jako String
-            updated_at: String,       // Daty jako String
+            tags: serde_json::Value,  // Handles different tag formats
+            created_at: String,       // Dates as String
+            updated_at: String,       // Dates as String
         }
 
         let helper = NoteHelper::deserialize(deserializer)?;
         
-        // Konwersja tagów
+        // Tags conversion
         let tags = match helper.tags {
             serde_json::Value::Array(arr) => {
-                // Jeśli to tablica, połącz elementy przecinkami
+                // If it's an array, join elements with commas
                 arr.iter()
                    .map(|v| v.as_str().unwrap_or("").to_string())
                    .collect::<Vec<_>>()
@@ -51,7 +50,7 @@ impl<'de> Deserialize<'de> for Note {
             _ => String::new(),
         };
         
-        // Konwersja dat
+        // Date conversion
         let created_at = DateTime::parse_from_rfc3339(&helper.created_at)
             .map_err(serde::de::Error::custom)?
             .timestamp_millis();

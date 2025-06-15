@@ -19,7 +19,7 @@ class _HomeContentState extends State<HomeContent> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -30,7 +30,7 @@ class _HomeContentState extends State<HomeContent> {
           ),
           const SizedBox(height: 20),
           const Text(
-            'Witaj w aplikacji Motek UI!',
+            'Welcome to the Motek UI app!',
             style: TextStyle(fontSize: 16),
           ),
           const SizedBox(height: 20),
@@ -41,7 +41,7 @@ class _HomeContentState extends State<HomeContent> {
                 const SnackBar(content: Text('Test log zapisany w konsoli')),
               );
             },
-            child: const Text('Testuj logi'),
+            child: const Text('Test logs'),
           ),
         ],
       ),

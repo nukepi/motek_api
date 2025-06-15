@@ -396,12 +396,10 @@ fn setup_logging() {
     let log_dir = "logs";
     let log_path = "myapp";
     
-    // Tworzenie katalogu logów, jeśli nie istnieje
     if !Path::new(log_dir).exists() {
         std::fs::create_dir_all(log_dir).expect("Failed to create log directory");
     }
     
-    // Konfiguracja rolling file appender
     let file_appender = tracing_appender::rolling::Builder::new()
         .rotation(Rotation::DAILY) // Rotacja plików codziennie
         .filename_prefix(log_path) // Poprawiona metoda (zamiast .filename())
@@ -409,35 +407,27 @@ fn setup_logging() {
         .build(log_dir)            // Katalog docelowy
         .expect("Failed to create rolling file appender");
     
-    // Utworzenie non-blocking writer
     let (non_blocking, _guard) = tracing_appender::non_blocking(file_appender);
     
-    // Konfiguracja subskrybenta
     tracing_subscriber::registry()
         .with(fmt::layer().with_writer(non_blocking))
         .init();
     
-    // Teraz możemy używać makr tracing do logowania
     tracing::info!("Aplikacja uruchomiona");
 }
 
-// Globalna zmienna przechowująca guard
 static mut LOG_GUARD: Option<tracing_appender::non_blocking::WorkerGuard> = None;
 
 fn setup_multi_logging(log_dir: &str, log_path: &str) {
-    // Sprawdź, czy logowanie zostało już zainicjalizowane
     if LOGGING_INITIALIZED.load(Ordering::SeqCst) {
-        // Logowanie już zainicjalizowane, więc tylko wypisz informację
         eprintln!("Logging already initialized, skipping setup");
         return;
     }
 
-    // Upewnij się, że katalog logów istnieje
     if !std::path::Path::new(log_dir).exists() {
         std::fs::create_dir_all(log_dir).expect("Nie udało się utworzyć katalogu logów");
     }
     
-    // Konfiguracja rolling file appender
     let file_appender = tracing_appender::rolling::Builder::new()
         .rotation(tracing_appender::rolling::Rotation::DAILY)
         .filename_prefix(log_path)
@@ -447,21 +437,17 @@ fn setup_multi_logging(log_dir: &str, log_path: &str) {
     
     let (non_blocking, guard) = tracing_appender::non_blocking(file_appender);
     
-    // Zapisanie guard w globalnej zmiennej
     unsafe {
         LOG_GUARD = Some(guard);
     }
     
-    // Konfiguracja z wieloma warstwami (layers)
     tracing_subscriber::registry()
-        .with(tracing_subscriber::fmt::layer().with_writer(non_blocking)) // Logowanie do pliku
-        .with(tracing_subscriber::fmt::layer().with_writer(std::io::stderr)) // Logowanie na stderr
+        .with(tracing_subscriber::fmt::layer().with_writer(non_blocking)) 
+        .with(tracing_subscriber::fmt::layer().with_writer(std::io::stderr)) 
         .init();
-    
-    // Ustaw flagę, że logowanie zostało zainicjalizowane
+
     LOGGING_INITIALIZED.store(true, Ordering::SeqCst);
         
-    // Możesz dodać log informujący o inicjalizacji systemu logowania
     tracing::info!("System logowania zainicjalizowany w katalogu {} z prefixem {}", log_dir, log_path);
 }
 
@@ -476,7 +462,6 @@ pub fn test_rust_logging() {
 
 #[flutter_rust_bridge::frb]
 pub fn set_flutter_log_callback(callback: fn(level: String, message: String)) {
-    // Teraz możemy bezpośrednio użyć closure
     let wrapper = move |level: &str, message: &str| {
         callback(level.to_string(), message.to_string());
     };
@@ -488,7 +473,6 @@ pub fn set_flutter_log_callback(callback: fn(level: String, message: String)) {
 
 #[flutter_rust_bridge::frb]
 pub fn setup_logging_bridge(log_level: String, log_file_path: Option<String>) {
-    // Jeśli logowanie jest już zainicjalizowane, tylko wypisz informację
     if LOGGING_INITIALIZED.load(Ordering::SeqCst) {
         info!("Logging already initialized. Changing log level to: {}", log_level);
         if let Some(path) = log_file_path {
@@ -521,7 +505,6 @@ pub fn setup_logging_bridge(log_level: String, log_file_path: Option<String>) {
         None => "motek_ui".to_string()
     };
     
-    // Używamy funkcji setup_multi_logging
     setup_multi_logging(&log_dir, &log_path);
     
     info!("Logging initialized with level: {}", log_level);

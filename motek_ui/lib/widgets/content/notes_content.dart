@@ -41,7 +41,7 @@ class _NotesContentState extends State<NotesContent> {
   }
 
   Future<void> _loadNotes() async {
-    // Sprawdź czy użytkownik jest zalogowany
+    // Check if the user is logged in
     final authService = Provider.of<AuthService>(context, listen: false);
     if (!authService.isLoggedIn) {
       setState(() {
@@ -49,7 +49,7 @@ class _NotesContentState extends State<NotesContent> {
       });
       return;
     }
-    
+
     setState(() {
       _isLoading = true;
       _errorMessage = null;
@@ -75,13 +75,13 @@ class _NotesContentState extends State<NotesContent> {
     }
   }
 
-  // Funkcja do parsowania treści notatki na czysty tekst
+  // Function to parse note content to plain text
   String _getPlainTextFromContent(String content) {
     try {
       final jsonData = json.decode(content);
-      
+
       if (jsonData is List) {
-        // Format Delta z edytora Quill
+        // Delta format from Quill editor
         String plainText = '';
         for (var op in jsonData) {
           if (op is Map && op.containsKey('insert')) {
@@ -90,7 +90,7 @@ class _NotesContentState extends State<NotesContent> {
         }
         return plainText;
       }
-      
+
       return jsonData.toString();
     } catch (e) {
       return content;
@@ -101,28 +101,26 @@ class _NotesContentState extends State<NotesContent> {
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => NoteEditorScreen(
-          onSave: (title, content) async {
-            try {
-              await createNote(
-                title: title,
-                content: content,
-              );
-              return true;
-            } catch (e) {
-              if (mounted) {
-                final l10n = AppLocalizations.of(context)!;
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(l10n.error(e.toString())))
-                );
-              }
-              return false;
-            }
-          },
-        ),
+        builder:
+            (context) => NoteEditorScreen(
+              onSave: (title, content) async {
+                try {
+                  await createNote(title: title, content: content);
+                  return true;
+                } catch (e) {
+                  if (mounted) {
+                    final l10n = AppLocalizations.of(context)!;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(l10n.error(e.toString()))),
+                    );
+                  }
+                  return false;
+                }
+              },
+            ),
       ),
     );
-    
+
     if (result == true && mounted) {
       _loadNotes();
     }
@@ -132,31 +130,32 @@ class _NotesContentState extends State<NotesContent> {
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => NoteEditorScreen(
-          initialTitle: note.title,
-          initialContent: note.content,
-          onSave: (title, content) async {
-            try {
-              await updateNote(
-                noteId: note.id,
-                title: title,
-                content: content,
-              );
-              return true;
-            } catch (e) {
-              if (mounted) {
-                final l10n = AppLocalizations.of(context)!;
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(l10n.error(e.toString())))
-                );
-              }
-              return false;
-            }
-          },
-        ),
+        builder:
+            (context) => NoteEditorScreen(
+              initialTitle: note.title,
+              initialContent: note.content,
+              onSave: (title, content) async {
+                try {
+                  await updateNote(
+                    noteId: note.id,
+                    title: title,
+                    content: content,
+                  );
+                  return true;
+                } catch (e) {
+                  if (mounted) {
+                    final l10n = AppLocalizations.of(context)!;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(l10n.error(e.toString()))),
+                    );
+                  }
+                  return false;
+                }
+              },
+            ),
       ),
     );
-    
+
     if (result == true && mounted) {
       _loadNotes();
     }
@@ -166,20 +165,24 @@ class _NotesContentState extends State<NotesContent> {
     final l10n = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.deleteNoteConfirmTitle),
-        content: Text(l10n.deleteNoteConfirmMessage(note.title)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(l10n.cancel),
+      builder:
+          (context) => AlertDialog(
+            title: Text(l10n.deleteNoteConfirmTitle),
+            content: Text(l10n.deleteNoteConfirmMessage(note.title)),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text(l10n.cancel),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: Text(
+                  l10n.delete,
+                  style: const TextStyle(color: Colors.red),
+                ),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(l10n.delete, style: const TextStyle(color: Colors.red)),
-          ),
-        ],
-      ),
     );
 
     if (confirmed == true) {
@@ -192,16 +195,16 @@ class _NotesContentState extends State<NotesContent> {
         if (mounted) {
           if (success) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(l10n.noteDeleted(note.title)))
+              SnackBar(content: Text(l10n.noteDeleted(note.title))),
             );
             _loadNotes();
           } else {
             setState(() {
               _isLoading = false;
             });
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(l10n.deleteNoteFailed))
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(l10n.deleteNoteFailed)));
           }
         }
       } catch (e) {
@@ -209,9 +212,9 @@ class _NotesContentState extends State<NotesContent> {
           setState(() {
             _isLoading = false;
           });
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(l10n.error(e.toString())))
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(l10n.error(e.toString()))));
         }
       }
     }
@@ -222,7 +225,7 @@ class _NotesContentState extends State<NotesContent> {
     final l10n = AppLocalizations.of(context)!;
     final authService = Provider.of<AuthService>(context);
 
-    // Sprawdź czy użytkownik jest zalogowany
+    // Check if the user is logged in
     if (!authService.isLoggedIn) {
       return Center(
         child: Column(
@@ -233,7 +236,8 @@ class _NotesContentState extends State<NotesContent> {
             ElevatedButton(
               onPressed: () {
                 // Przejdź do ekranu logowania
-                final mainLayout = context.findAncestorStateOfType<State<MainLayout>>();
+                final mainLayout =
+                    context.findAncestorStateOfType<State<MainLayout>>();
                 if (mainLayout != null) {
                   final mainLayoutState = mainLayout as dynamic;
                   mainLayoutState.changeContent(ContentType.login);
@@ -274,55 +278,58 @@ class _NotesContentState extends State<NotesContent> {
           ),
         ],
       ),
-      body: _notes.isEmpty
-          ? Center(child: Text(l10n.noNotes))
-          : ListView.builder(
-              itemCount: _notes.length,
-              itemBuilder: (context, index) {
-                final note = _notes[index];
-                // Parsowanie treści notatki na czysty tekst
-                final plainTextContent = _getPlainTextFromContent(note.content);
-                
-                return Dismissible(
-                  key: Key(note.id),
-                  background: Container(
-                    color: Colors.red,
-                    alignment: Alignment.centerRight,
-                    padding: const EdgeInsets.only(right: 20),
-                    child: const Icon(Icons.delete, color: Colors.white),
-                  ),
-                  direction: DismissDirection.endToStart,
-                  confirmDismiss: (_) async {
-                    await _deleteNote(note);
-                    return false; // Nie usuwamy elementu z listy, bo _loadNotes() to zrobi
-                  },
-                  child: ListTile(
-                    title: Text(note.title),
-                    subtitle: Text(
-                      plainTextContent.length > 50
-                          ? '${plainTextContent.substring(0, 50)}...'
-                          : plainTextContent,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+      body:
+          _notes.isEmpty
+              ? Center(child: Text(l10n.noNotes))
+              : ListView.builder(
+                itemCount: _notes.length,
+                itemBuilder: (context, index) {
+                  final note = _notes[index];
+                  // Parse note content to plain text
+                  final plainTextContent = _getPlainTextFromContent(
+                    note.content,
+                  );
+
+                  return Dismissible(
+                    key: Key(note.id),
+                    background: Container(
+                      color: Colors.red,
+                      alignment: Alignment.centerRight,
+                      padding: const EdgeInsets.only(right: 20),
+                      child: const Icon(Icons.delete, color: Colors.white),
                     ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit),
-                          onPressed: () => _editNote(note),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete),
-                          onPressed: () => _deleteNote(note),
-                        ),
-                      ],
+                    direction: DismissDirection.endToStart,
+                    confirmDismiss: (_) async {
+                      await _deleteNote(note);
+                      return false; // Nie usuwamy elementu z listy, bo _loadNotes() to zrobi
+                    },
+                    child: ListTile(
+                      title: Text(note.title),
+                      subtitle: Text(
+                        plainTextContent.length > 50
+                            ? '${plainTextContent.substring(0, 50)}...'
+                            : plainTextContent,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.edit),
+                            onPressed: () => _editNote(note),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () => _deleteNote(note),
+                          ),
+                        ],
+                      ),
+                      onTap: () => _editNote(note),
                     ),
-                    onTap: () => _editNote(note),
-                  ),
-                );
-              },
-            ),
+                  );
+                },
+              ),
       floatingActionButton: FloatingActionButton(
         onPressed: _addNewNote,
         backgroundColor: Colors.amber,

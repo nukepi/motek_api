@@ -72,7 +72,7 @@ class CustomDrawer extends StatelessWidget {
               child: Text(
                 authService.userEmail!,
                 style: TextStyle(
-                  color: isDarkMode ? Colors.amber.withOpacity(0.7) : Colors.white.withOpacity(0.7),
+                  color: isDarkMode ? Colors.amber.withValues(alpha: 0.7) : Colors.white.withValues(alpha: 0.7),
                   fontSize: 14,
                 ),
               ),

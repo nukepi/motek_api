@@ -1,5 +1,5 @@
 use serde::{Serialize, Deserialize, Deserializer};
-use chrono::{DateTime, Utc};
+use chrono::DateTime;
 use crate::utils::helpers::{authorized_get, authorized_post, authorized_put, authorized_delete};
 
 #[derive(Serialize, Debug, Clone)]
